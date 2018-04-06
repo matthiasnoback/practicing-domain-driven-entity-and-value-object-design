@@ -1,6 +1,23 @@
 # PHP testing playground
 
-## Use with Docker
+
+## Option 1: Use with locally installed PHP
+
+### Requirements
+
+- PHP (>= 7.1)
+- Composer
+
+### Getting started
+
+- Clone this repository and `cd` into it.
+- Run `composer install --prefer-dist` to install the project's dependencies.
+
+### Usage
+
+- Run `./run_tests.sh` to run the tests.
+
+## Option 2: Use with Docker
 
 ### Requirements
 
@@ -19,19 +36,3 @@
 
 - Run `docker/composer.sh` to use Composer (e.g. `docker/composer.sh require --dev symfony/var-dumper`).
 - Run `docker/run_tests.sh` to run the tests.
-
-## Use with locally installed PHP
-
-### Requirements
-
-- PHP (>= 7.1))
-- Composer
-
-### Getting started
-
-- Clone this repository and `cd` into it.
-- Run `composer install --prefer-dist` to install the project's dependencies.
-
-### Usage
-
-- Run `./run_tests.sh` to run the tests.
