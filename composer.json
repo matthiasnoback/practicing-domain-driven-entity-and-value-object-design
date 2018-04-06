@@ -1,0 +1,33 @@
+{
+    "authors": [
+        {
+            "name": "Matthias Noback",
+            "email": "matthiasnoback@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "behat/behat": "^3.4",
+        "symfony/var-dumper": "^4.0",
+        "phpunit/phpunit": "^7.0"
+    },
+    "require": {
+        "php": "^7.1",
+        "beberlei/assert": "^2.9",
+        "ramsey/uuid": "^3.7",
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\Acceptance\\": "test/Acceptance",
+            "": ["test/Unit", "test/Integration"]
+        },
+        "files": [
+            "vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"
+        ]
+    }
+}
