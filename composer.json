@@ -14,7 +14,8 @@
         "php": "^7.1",
         "beberlei/assert": "^2.9",
         "ramsey/uuid": "^3.7",
-        "roave/security-advisories": "dev-master"
+        "roave/security-advisories": "dev-master",
+        "matthiasnoback/php-workshop-tools": "^0.21"
     },
     "autoload": {
         "psr-4": {
