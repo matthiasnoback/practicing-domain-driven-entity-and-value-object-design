@@ -5,12 +5,9 @@ namespace Example;
 
 use Common\AggregateNotFound;
 use Common\AggregateRepository;
-use Common\InMemoryObjectStore;
 
 final class ExampleAggregateRepository extends AggregateRepository
 {
-    use InMemoryObjectStore;
-
     public function save(ExampleAggregate $aggregate): void
     {
         $this->store($aggregate);
