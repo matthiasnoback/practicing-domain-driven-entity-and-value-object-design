@@ -3,6 +3,7 @@
 namespace Common;
 
 use Common\EventDispatcher\EventDispatcher;
+use Ramsey\Uuid\Uuid;
 
 abstract class AggregateRepository
 {
@@ -35,5 +36,10 @@ abstract class AggregateRepository
         }
 
         return $this->objects[$id];
+    }
+
+    protected function generateUuid(): string
+    {
+        return Uuid::uuid4()->toString();
     }
 }

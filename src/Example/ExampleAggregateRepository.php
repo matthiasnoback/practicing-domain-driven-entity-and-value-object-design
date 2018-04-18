@@ -23,4 +23,9 @@ final class ExampleAggregateRepository extends AggregateRepository
 
         return $aggregate;
     }
+
+    public function nextIdentity(): ExampleAggregateId
+    {
+        return ExampleAggregateId::fromString($this->generateUuid());
+    }
 }

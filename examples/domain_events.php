@@ -5,7 +5,6 @@ namespace Example;
 
 use Common\EventDispatcher\EventCliLogger;
 use Common\EventDispatcher\EventDispatcher;
-use Ramsey\Uuid\Uuid;
 
 require __DIR__ . '/../bootstrap.php';
 
@@ -16,9 +15,7 @@ $eventDispatcher->registerSubscriber(ExampleAggregateCreated::class, new Example
 $exampleAggregateRepository = new ExampleAggregateRepository($eventDispatcher);
 
 $aggregate = new ExampleAggregate(
-    ExampleAggregateId::fromString(
-        Uuid::uuid4()->toString()
-    )
+    $exampleAggregateRepository->nextIdentity()
 );
 
 $exampleAggregateRepository->save($aggregate);
