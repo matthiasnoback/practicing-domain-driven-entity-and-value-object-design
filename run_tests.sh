@@ -2,7 +2,7 @@
 
 set -e
 
-vendor/bin/phpstan analyse -l max src test
+vendor/bin/phpstan analyse
 vendor/bin/phpunit --testsuite unit -v
 vendor/bin/phpunit --testsuite integration -v
 vendor/bin/behat --suite acceptance -vvv

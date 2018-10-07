@@ -9,7 +9,9 @@
         "behat/behat": "^3.4",
         "symfony/var-dumper": "^4.0",
         "phpunit/phpunit": "^7.0",
-        "phpstan/phpstan": "^0.9.2"
+        "phpstan/phpstan": "^0.10.3",
+        "phpstan/phpstan-beberlei-assert": "^0.10.0",
+        "phpstan/phpstan-phpunit": "^0.10.0"
     },
     "require": {
         "php": "^7.1",
