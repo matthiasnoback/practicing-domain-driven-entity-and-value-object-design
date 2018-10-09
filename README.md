@@ -37,3 +37,21 @@
 
 - Run `docker/composer.sh` to use Composer (e.g. `docker/composer.sh require --dev symfony/var-dumper`).
 - Run `docker/run_tests.sh` to run the tests.
+
+## Sharing patches
+
+If you want to share your work with the group, make sure you _stage_ any file you want to share. You can do this with `git add [filename]` on the command line. Make sure to also stage renamed and deleted files that you want to share. When you're done, run:
+
+```bash
+git diff > [name-of-the-patch].patch
+```
+
+Now share this patch via email, Slack, or whatever.
+
+Someone else who has push rights (the workshop leader?) should apply this patch to the latest version of the code:
+
+```bash
+git apply [name-of-the-patch].patch
+```
+
+They should then add everything, commit it, and push it to the main branch.
