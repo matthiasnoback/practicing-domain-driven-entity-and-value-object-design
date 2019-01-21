@@ -27,7 +27,7 @@
 
 ### Getting started
 
-- [Follow the instructions](https://github.com/matthiasnoback/php-workshop-tools/blob/master/README.md) for setting environment variables `HOST_UID`, `HOST_GID` and `DOCKER_HOST_IP`.
+- [Follow the instructions](https://github.com/matthiasnoback/php-workshop-tools/blob/master/README.md) for setting environment variables `HOST_UID`, `HOST_GID` and `DOCKER_HOST_NAME_OR_IP`.
 - Clone this repository and `cd` into it.
 - Run `docker-compose pull`.
 - Run `bin/composer.sh install --prefer-dist` to install the project's dependencies.
@@ -35,8 +35,8 @@
 
 ### Usage
 
-- Run `docker/composer.sh` to use Composer (e.g. `docker/composer.sh require --dev symfony/var-dumper`).
-- Run `docker/run_tests.sh` to run the tests.
+- Run `bin/composer.sh` to use Composer (e.g. `bin/composer.sh require --dev symfony/var-dumper`).
+- Run `bin/run_tests.sh` to run the tests.
 
 ## Sharing patches
 

@@ -2,12 +2,17 @@ version: '3'
 
 services:
     php:
-        image: matthiasnoback/advanced_testing_workshop_devtools
+        image: matthiasnoback/testing-playground-php:7.2
+        build: docker/php/
         volumes:
-            - ./:/opt:cached
-            - ~/.composer:/home/.composer:cached
+            - ./:/opt/project:cached
         environment:
-            COMPOSER_HOME: /home/.composer
-            XDEBUG_CONFIG: "remote_host=${DOCKER_HOST_IP}"
-            PHP_IDE_CONFIG: "serverName=php"
+            XDEBUG_CONFIG: "remote_host=${DOCKER_HOST_NAME_OR_IP}"
+        user: ${HOST_UID}:${HOST_GID}
+
+    composer:
+        image: composer:1.8
+        volumes:
+            - ./:/app:cached
+            - ~/.composer:/tmp:cached
         user: ${HOST_UID}:${HOST_GID}
