@@ -46,7 +46,7 @@ If you want to share your work with the group, make sure you _stage_ any file yo
 git diff > [name-of-the-patch].patch
 ```
 
-Now share this patch via email, Slack, or whatever.
+Now share this patch via email ([matthiasnoback@gmail.com](mailto:matthiasnoback@gmail.com)), Slack, or whatever.
 
 Someone else who has push rights (the workshop leader?) should apply this patch to the latest version of the code:
 

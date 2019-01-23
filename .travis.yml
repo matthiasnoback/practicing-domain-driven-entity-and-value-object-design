@@ -12,4 +12,3 @@ install:
 
 script:
   - ./run_tests.sh
-  - php examples/domain_events.php
