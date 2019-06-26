@@ -105,6 +105,19 @@ final class SalesInvoiceTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function you_can_finalize_an_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        self::assertFalse($salesInvoice->isFinalized());
+
+        $salesInvoice->setFinalized(true);
+
+        self::assertTrue($salesInvoice->isFinalized());
+    }
+
+    /**
      * @return SalesInvoice
      */
     private function createSalesInvoice(): SalesInvoice

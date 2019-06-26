@@ -27,6 +27,11 @@ final class SalesInvoice
      */
     private $lines = [];
 
+    /**
+     * @var bool
+     */
+    private $isFinalized = false;
+
     public function __construct()
     {
     }
@@ -105,5 +110,15 @@ final class SalesInvoice
         }
 
         return round($this->totalVatAmount() / $this->exchangeRate, 2);
+    }
+
+    public function setFinalized(bool $finalized): void
+    {
+        $this->isFinalized = $finalized;
+    }
+
+    public function isFinalized(): bool
+    {
+        return $this->isFinalized;
     }
 }
