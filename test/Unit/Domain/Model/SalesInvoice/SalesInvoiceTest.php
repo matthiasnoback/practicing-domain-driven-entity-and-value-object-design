@@ -12,7 +12,11 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
-        $salesInvoice = new SalesInvoice('USD', 1.3, 3);
+        $salesInvoice = new SalesInvoice();
+        $salesInvoice->setCurrency('USD');
+        $salesInvoice->setExchangeRate(1.3);
+        $salesInvoice->setQuantityPrecision(3);
+
         $salesInvoice->addLine(
             'Product with a 10% discount and standard VAT applied',
             2.0,
@@ -62,7 +66,7 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_ledger_currency(): void
     {
-        $salesInvoice = new SalesInvoice('EUR', 1, 3);
+        $salesInvoice = $this->createSalesInvoice();
         $salesInvoice->addLine(
             'Product with a 10% discount and standard VAT applied',
             2.0,
@@ -105,7 +109,11 @@ final class SalesInvoiceTest extends TestCase
      */
     private function createSalesInvoice(): SalesInvoice
     {
-        return new SalesInvoice('EUR', 1, 3);
+        $salesInvoice = new SalesInvoice();
+        $salesInvoice->setCurrency('EUR');
+        $salesInvoice->setQuantityPrecision(3);
+
+        return $salesInvoice;
     }
 
     private function someDescription(): string

@@ -27,10 +27,22 @@ final class SalesInvoice
      */
     private $lines = [];
 
-    public function __construct(string $currency, ?float $exchangeRate, int $quantityPrecision)
+    public function __construct()
+    {
+    }
+
+    public function setCurrency(string $currency): void
     {
         $this->currency = $currency;
+    }
+
+    public function setExchangeRate(?float $exchangeRate): void
+    {
         $this->exchangeRate = $exchangeRate;
+    }
+
+    public function setQuantityPrecision(int $quantityPrecision): void
+    {
         $this->quantityPrecision = $quantityPrecision;
     }
 
