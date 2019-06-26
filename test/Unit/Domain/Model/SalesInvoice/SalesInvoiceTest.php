@@ -118,6 +118,19 @@ final class SalesInvoiceTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function you_can_cancel_an_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        self::assertFalse($salesInvoice->isCancelled());
+
+        $salesInvoice->setCancelled(true);
+
+        self::assertTrue($salesInvoice->isCancelled());
+    }
+
+    /**
      * @return SalesInvoice
      */
     private function createSalesInvoice(): SalesInvoice

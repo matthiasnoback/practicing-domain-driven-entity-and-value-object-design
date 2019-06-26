@@ -32,6 +32,11 @@ final class SalesInvoice
      */
     private $isFinalized = false;
 
+    /**
+     * @var bool
+     */
+    private $isCancelled = false;
+
     public function __construct()
     {
     }
@@ -120,5 +125,15 @@ final class SalesInvoice
     public function isFinalized(): bool
     {
         return $this->isFinalized;
+    }
+
+    public function setCancelled(bool $cancelled): void
+    {
+        $this->isCancelled = $cancelled;
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->isCancelled;
     }
 }
