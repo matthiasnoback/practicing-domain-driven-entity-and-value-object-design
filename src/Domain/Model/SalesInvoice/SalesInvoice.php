@@ -4,9 +4,15 @@ declare(strict_types=1);
 namespace Domain\Model\SalesInvoice;
 
 use Assert\Assertion;
+use DateTimeImmutable;
 
 final class SalesInvoice
 {
+    /**
+     * @var int
+     */
+    private $customerId;
+
     /**
      * @var string
      */
@@ -37,8 +43,23 @@ final class SalesInvoice
      */
     private $isCancelled = false;
 
+    /**
+     * @var DateTimeImmutable
+     */
+    private $invoiceDate;
+
     public function __construct()
     {
+    }
+
+    public function setCustomerId(int $customerId): void
+    {
+        $this->customerId = $customerId;
+    }
+
+    public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
+    {
+        $this->invoiceDate = $invoiceDate;
     }
 
     public function setCurrency(string $currency): void

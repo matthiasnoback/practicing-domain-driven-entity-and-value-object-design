@@ -2,6 +2,7 @@
 
 namespace Domain\Model\SalesInvoice;
 
+use DateTimeImmutable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -13,6 +14,8 @@ final class SalesInvoiceTest extends TestCase
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
         $salesInvoice = new SalesInvoice();
+        $salesInvoice->setCustomerId(1001);
+        $salesInvoice->setInvoiceDate(new DateTimeImmutable());
         $salesInvoice->setCurrency('USD');
         $salesInvoice->setExchangeRate(1.3);
         $salesInvoice->setQuantityPrecision(3);
@@ -141,6 +144,8 @@ final class SalesInvoiceTest extends TestCase
     private function createSalesInvoice(): SalesInvoice
     {
         $salesInvoice = new SalesInvoice();
+        $salesInvoice->setCustomerId(1001);
+        $salesInvoice->setInvoiceDate(new DateTimeImmutable());
         $salesInvoice->setCurrency('EUR');
         $salesInvoice->setQuantityPrecision(3);
 
