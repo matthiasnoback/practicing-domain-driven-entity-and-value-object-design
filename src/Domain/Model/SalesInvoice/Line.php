@@ -9,6 +9,11 @@ use InvalidArgumentException;
 final class Line
 {
     /**
+     * @var int
+     */
+    private $productId;
+
+    /**
      * @var string
      */
     private $description;
@@ -49,6 +54,7 @@ final class Line
     private $exchangeRate;
 
     public function __construct(
+        int $productId,
         string $description,
         float $quantity,
         int $quantityPrecision,
@@ -58,6 +64,7 @@ final class Line
         string $vatCode,
         ?float $exchangeRate
     ) {
+        $this->productId = $productId;
         $this->description = $description;
         $this->quantity = $quantity;
         $this->quantityPrecision = $quantityPrecision;
@@ -102,23 +109,5 @@ final class Line
         }
 
         return round($this->netAmount() * $vatRate / 100, 2);
-    }
-
-    public function netAmountInLedgerCurrency(): float
-    {
-        if ($this->currency === 'EUR' || $this->exchangeRate === null) {
-            return $this->netAmount();
-        }
-
-        return round($this->netAmount() / $this->exchangeRate, 2);
-    }
-
-    public function vatAmountInLedgerCurrency(): float
-    {
-        if ($this->currency === 'EUR' || $this->exchangeRate === null) {
-            return $this->vatAmount();
-        }
-
-        return round($this->vatAmount() / $this->exchangeRate, 2);
     }
 }

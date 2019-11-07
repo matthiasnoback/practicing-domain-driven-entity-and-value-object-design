@@ -18,6 +18,7 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice->setQuantityPrecision(3);
 
         $salesInvoice->addLine(
+            1,
             'Product with a 10% discount and standard VAT applied',
             2.0,
             15.0,
@@ -25,6 +26,7 @@ final class SalesInvoiceTest extends TestCase
             'S'
         );
         $salesInvoice->addLine(
+            2,
             'Product with no discount and low VAT applied',
             3.123456,
             12.50,
@@ -68,6 +70,7 @@ final class SalesInvoiceTest extends TestCase
     {
         $salesInvoice = $this->createSalesInvoice();
         $salesInvoice->addLine(
+            $this->aProductId(),
             'Product with a 10% discount and standard VAT applied',
             2.0,
             15.0,
@@ -75,6 +78,7 @@ final class SalesInvoiceTest extends TestCase
             'S'
         );
         $salesInvoice->addLine(
+            $this->anotherProductId(),
             'Product with no discount and low VAT applied',
             3.123456,
             12.50,
@@ -96,9 +100,10 @@ final class SalesInvoiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $salesInvoice->addLine(
-            $this->someDescription(),
-            $this->someQuantity(),
-            $this->someTariff(),
+            $this->aProductId(),
+            $this->aDescription(),
+            $this->aQuantity(),
+            $this->aTariff(),
             null,
             'Invalid VAT code'
         );
@@ -142,18 +147,28 @@ final class SalesInvoiceTest extends TestCase
         return $salesInvoice;
     }
 
-    private function someDescription(): string
+    private function aDescription(): string
     {
         return 'Description';
     }
 
-    private function someQuantity(): float
+    private function aQuantity(): float
     {
         return 2.0;
     }
 
-    private function someTariff(): float
+    private function aTariff(): float
     {
         return 15.0;
+    }
+
+    private function aProductId(): int
+    {
+        return 1;
+    }
+
+    private function anotherProductId(): int
+    {
+        return 2;
     }
 }

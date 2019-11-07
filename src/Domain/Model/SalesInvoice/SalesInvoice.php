@@ -57,6 +57,7 @@ final class SalesInvoice
     }
 
     public function addLine(
+        int $productId,
         string $description,
         float $quantity,
         float $tariff,
@@ -66,6 +67,7 @@ final class SalesInvoice
         Assertion::inArray($vatCode, ['S', 'L']);
 
         $this->lines[] = new Line(
+            $productId,
             $description,
             $quantity,
             $this->quantityPrecision,
