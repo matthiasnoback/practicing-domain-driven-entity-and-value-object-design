@@ -1,12 +1,12 @@
 # PHP testing playground
 
-[![Build Status](https://travis-ci.org/matthiasnoback/testing-playground.svg?branch=master)](https://travis-ci.org/matthiasnoback/testing-playground)
+[![Build Status](https://travis-ci.org/matthiasnoback/practicing-domain-driven-entity-and-value-object-design.svg?branch=master)](https://travis-ci.org/matthiasnoback/practicing-domain-driven-entity-and-value-object-design)
 
 ## Option 1: Use with locally installed PHP
 
 ### Requirements
 
-- PHP (>= 7.1)
+- PHP (>= 7.4)
 - Composer
 
 ### Getting started
@@ -27,11 +27,16 @@
 
 ### Getting started
 
-- [Follow the instructions](https://github.com/matthiasnoback/php-workshop-tools/blob/master/README.md) for setting environment variables `HOST_UID`, `HOST_GID` and `DOCKER_HOST_NAME_OR_IP`.
+- Make sure the `HOST_UID` and `HOST_GUID` environment variables have been defined:
+
+    ```bash
+    export HOST_GID=$(id -g)
+    export HOST_UID=$(id -u)
+    ```
+
 - Clone this repository and `cd` into it.
 - Run `docker-compose pull`.
 - Run `bin/composer.sh install --prefer-dist` to install the project's dependencies.
-- Optionally, [configure PhpStorm for debugging](https://github.com/matthiasnoback/php-workshop-tools/blob/master/README.md).
 
 ### Usage
 
