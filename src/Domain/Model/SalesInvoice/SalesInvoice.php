@@ -102,13 +102,13 @@ final class SalesInvoice
 
     public function totalNetAmount(): float
     {
-        $sum = 0.0;
+        $sum = Amount::fromFloat(0.0, $this->currency);
 
         foreach ($this->lines as $line) {
-            $sum += $line->netAmount();
+            $sum = $sum->add(Amount::fromFloat($line->netAmount(), $this->currency));
         }
 
-        return round($sum, 2);
+        return $sum->asFloat();
     }
 
     public function totalNetAmountInLedgerCurrency(): float

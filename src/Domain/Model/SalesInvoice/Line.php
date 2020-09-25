@@ -75,9 +75,9 @@ final class Line
         $this->exchangeRate = $exchangeRate;
     }
 
-    public function amount(): float
+    public function amount(): Amount
     {
-        return round(round($this->quantity, $this->quantityPrecision) * $this->tariff, 2);
+        return Amount::fromFloat(round($this->quantity, $this->quantityPrecision) * $this->tariff, $this->currency);
     }
 
     public function discountAmount(): float
@@ -86,12 +86,13 @@ final class Line
             return 0.0;
         }
 
-        return round($this->amount() * $this->discount / 100, 2);
+        return round($this->amount()->asFloat() * $this->discount / 100, 2);
     }
 
     public function netAmount(): float
     {
-        return round($this->amount() - $this->discountAmount(), 2);
+        return $this->amount()
+            ->subtract(Amount::fromFloat($this->discountAmount(), $this->currency))->asFloat();
     }
 
     public function vatAmount(): float
