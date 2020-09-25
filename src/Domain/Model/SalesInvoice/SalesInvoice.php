@@ -5,6 +5,7 @@ namespace Domain\Model\SalesInvoice;
 
 use Assert\Assertion;
 use DateTimeImmutable;
+use InvalidArgumentException;
 
 final class SalesInvoice
 {
@@ -48,33 +49,38 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    public function __construct()
-    {
-    }
+    private function __construct(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        int $quantityPrecision,
+        string $currency,
+        ?float $exchangeRate
+    ) {
+        if ($currency !== 'EUR' && $exchangeRate === null) {
+            throw new InvalidArgumentException('An exchange rate is required if the currency is not EUR');
+        }
 
-    public function setCustomerId(int $customerId): void
-    {
         $this->customerId = $customerId;
-    }
-
-    public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
-    {
         $this->invoiceDate = $invoiceDate;
-    }
-
-    public function setCurrency(string $currency): void
-    {
+        $this->quantityPrecision = $quantityPrecision;
         $this->currency = $currency;
-    }
-
-    public function setExchangeRate(?float $exchangeRate): void
-    {
         $this->exchangeRate = $exchangeRate;
     }
 
-    public function setQuantityPrecision(int $quantityPrecision): void
-    {
-        $this->quantityPrecision = $quantityPrecision;
+    public static function create(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        int $quantityPrecision,
+        string $currency,
+        ?float $exchangeRate
+    ): self {
+        return new self(
+            $customerId,
+            $invoiceDate,
+            $quantityPrecision,
+            $currency,
+            $exchangeRate
+        );
     }
 
     public function addLine(
