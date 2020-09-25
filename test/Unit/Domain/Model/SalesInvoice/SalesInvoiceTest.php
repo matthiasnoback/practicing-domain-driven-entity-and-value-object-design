@@ -15,7 +15,13 @@ final class SalesInvoiceTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        SalesInvoice::create(1001, new DateTimeImmutable(), 3, 'USD', $noExchangeRate = null);
+        SalesInvoice::create(
+            $this->aCustomerId(),
+            $this->aDate(),
+            $this->aQuantityPrecision(),
+            $this->aForeignCurrency(),
+            $noExchangeRate = null
+        );
     }
 
     /**
@@ -23,7 +29,7 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
-        $salesInvoice = SalesInvoice::create(1001, new DateTimeImmutable(), 3, 'USD', 1.3);
+        $salesInvoice = SalesInvoice::create($this->aCustomerId(), $this->aDate(), 3, $this->aForeignCurrency(), 1.3);
 
         $salesInvoice->addLine(
             1,
@@ -148,7 +154,12 @@ final class SalesInvoiceTest extends TestCase
      */
     private function createSalesInvoice(): SalesInvoice
     {
-        return SalesInvoice::create(1001, new DateTimeImmutable(), 3, 'EUR', null);
+        return SalesInvoice::create(
+            $this->aCustomerId(),
+            new DateTimeImmutable(),
+            $this->aQuantityPrecision(),
+            'EUR',
+            null);
     }
 
     private function aDescription(): string
@@ -174,5 +185,25 @@ final class SalesInvoiceTest extends TestCase
     private function anotherProductId(): int
     {
         return 2;
+    }
+
+    private function aCustomerId(): int
+    {
+        return 1001;
+    }
+
+    private function aDate(): DateTimeImmutable
+    {
+        return new DateTimeImmutable();
+    }
+
+    private function aForeignCurrency(): string
+    {
+        return 'USD';
+    }
+
+    private function aQuantityPrecision(): int
+    {
+        return 3;
     }
 }
