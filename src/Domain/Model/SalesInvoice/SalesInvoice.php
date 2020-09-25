@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Domain\Model\SalesInvoice;
 
+use Assert\Assert;
 use Assert\Assertion;
 use DateTimeImmutable;
 use InvalidArgumentException;
+use LogicException;
 
 final class SalesInvoice
 {
@@ -58,6 +60,9 @@ final class SalesInvoice
     ) {
         if ($currency !== 'EUR' && $exchangeRate === null) {
             throw new InvalidArgumentException('An exchange rate is required if the currency is not EUR');
+        }
+        if ($currency === 'EUR' && $exchangeRate !== null) {
+            throw new InvalidArgumentException('You cannot use an exchange rate if the currency is EUR');
         }
 
         $this->customerId = $customerId;
@@ -119,9 +124,11 @@ final class SalesInvoice
 
     public function totalNetAmountInLedgerCurrency(): float
     {
-        if ($this->currency === 'EUR' || $this->exchangeRate == null) {
+        if ($this->currency === 'EUR') {
             return $this->totalNetAmount();
         }
+
+        Assert::that($this->exchangeRate)->notNull();
 
         return round($this->totalNetAmount() / $this->exchangeRate, 2);
     }
@@ -146,9 +153,13 @@ final class SalesInvoice
         return round($this->totalVatAmount() / $this->exchangeRate, 2);
     }
 
-    public function setFinalized(bool $finalized): void
+    public function finalize(): void
     {
-        $this->isFinalized = $finalized;
+        if ($this->isCancelled) {
+            throw new LogicException('You cannot finalize this invoice because it has been cancelled');
+        }
+
+        $this->isFinalized = true;
     }
 
     public function isFinalized(): bool
@@ -156,9 +167,13 @@ final class SalesInvoice
         return $this->isFinalized;
     }
 
-    public function setCancelled(bool $cancelled): void
+    public function cancel(): void
     {
-        $this->isCancelled = $cancelled;
+        if ($this->isFinalized) {
+            throw new LogicException('You cannot cancel this invoice because it has been finalized');
+        }
+
+        $this->isCancelled = true;
     }
 
     public function isCancelled(): bool

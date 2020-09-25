@@ -4,6 +4,7 @@ namespace Domain\Model\SalesInvoice;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 final class SalesInvoiceTest extends TestCase
@@ -131,9 +132,22 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isFinalized());
 
-        $salesInvoice->setFinalized(true);
+        $salesInvoice->finalize();
 
         self::assertTrue($salesInvoice->isFinalized());
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_finalize_an_invoice_if_it_has_been_cancelled(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->cancel();
+
+        $this->expectException(LogicException::class);
+
+        $salesInvoice->finalize();
     }
 
     /**
@@ -144,9 +158,22 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isCancelled());
 
-        $salesInvoice->setCancelled(true);
+        $salesInvoice->cancel();
 
         self::assertTrue($salesInvoice->isCancelled());
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_cancel_an_invoice_if_it_has_been_finalized(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+
+        $this->expectException(LogicException::class);
+
+        $salesInvoice->cancel();
     }
 
     /**
