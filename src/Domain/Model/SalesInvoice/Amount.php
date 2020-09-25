@@ -21,6 +21,11 @@ final class Amount
         return new self($amount, $currency);
     }
 
+    public static function zero(string $currency): self
+    {
+        return new self(0.0, $currency);
+    }
+
     public function add(self $other): self
     {
         Assert::that($this->currency)->eq($other->currency);
@@ -42,6 +47,14 @@ final class Amount
 
         return new self(
             $this->amount - $other->amount,
+            $this->currency
+        );
+    }
+
+    public function calculateDiscountAmount(float $percentage): self
+    {
+        return new self(
+            $this->amount * ($percentage / 100),
             $this->currency
         );
     }

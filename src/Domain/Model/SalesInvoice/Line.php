@@ -77,22 +77,21 @@ final class Line
 
     public function amount(): Amount
     {
+        // @TODO introduce a Tariff VO and let it return an Amount instead of a float
         return Amount::fromFloat(round($this->quantity, $this->quantityPrecision) * $this->tariff, $this->currency);
     }
 
-    public function discountAmount(): float
+    public function discountAmount(): Amount
     {
-        if ($this->discount === null) {
-            return 0.0;
-        }
-
-        return round($this->amount()->asFloat() * $this->discount / 100, 2);
+        return $this->amount()->calculateDiscountAmount(
+            $this->discount ?? 0.0
+        );
     }
 
-    public function netAmount(): float
+    public function netAmount(): Amount
     {
         return $this->amount()
-            ->subtract(Amount::fromFloat($this->discountAmount(), $this->currency))->asFloat();
+            ->subtract($this->discountAmount());
     }
 
     public function vatAmount(): float
@@ -109,6 +108,6 @@ final class Line
             throw new InvalidArgumentException('Should not happen');
         }
 
-        return round($this->netAmount() * $vatRate / 100, 2);
+        return round($this->netAmount()->asFloat() * $vatRate / 100, 2);
     }
 }

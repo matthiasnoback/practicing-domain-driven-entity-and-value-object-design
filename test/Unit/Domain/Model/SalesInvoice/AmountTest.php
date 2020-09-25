@@ -88,4 +88,27 @@ final class AmountTest extends TestCase
                 )
         );
     }
+
+    /**
+     * @test
+     */
+    public function it_has_a_shortcut_for_creating_an_amount_of_zero(): void
+    {
+        self::assertEquals(
+            Amount::fromFloat(0.0, 'EUR'),
+            Amount::zero('EUR')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_apply_a_discount_percentage_to_it(): void
+    {
+        self::assertEquals(
+            Amount::fromFloat(1.0, 'EUR'),
+            Amount::fromFloat(10.0, 'EUR')
+                ->calculateDiscountAmount(10.0)
+        );
+    }
 }
