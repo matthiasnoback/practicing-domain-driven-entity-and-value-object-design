@@ -11,6 +11,21 @@ use LogicException;
 
 final class SalesInvoice
 {
+    private const STATE_CREATED = 'created';
+    private const STATE_CANCELLED = 'cancelled';
+    private const STATE_FINALIZED = 'finalized';
+
+    private string $currentState = self::STATE_CREATED;
+
+    private const ALLOWED_TRANSITIONS = [
+        self::STATE_CREATED => [
+            self::STATE_CANCELLED,
+            self::STATE_FINALIZED
+        ],
+        self::STATE_CANCELLED => [],
+        self::STATE_FINALIZED => []
+    ];
+
     /**
      * @var int
      */
@@ -35,16 +50,6 @@ final class SalesInvoice
      * @var Line[]
      */
     private $lines = [];
-
-    /**
-     * @var bool
-     */
-    private $isFinalized = false;
-
-    /**
-     * @var bool
-     */
-    private $isCancelled = false;
 
     /**
      * @var DateTimeImmutable
@@ -155,29 +160,30 @@ final class SalesInvoice
 
     public function finalize(): void
     {
-        if ($this->isCancelled) {
-            throw new LogicException('You cannot finalize this invoice because it has been cancelled');
-        }
-
-        $this->isFinalized = true;
+        $this->transitionTo(self::STATE_FINALIZED);
     }
 
     public function isFinalized(): bool
     {
-        return $this->isFinalized;
+        return $this->currentState === self::STATE_FINALIZED;
     }
 
     public function cancel(): void
     {
-        if ($this->isFinalized) {
-            throw new LogicException('You cannot cancel this invoice because it has been finalized');
-        }
-
-        $this->isCancelled = true;
+        $this->transitionTo(self::STATE_CANCELLED);
     }
 
     public function isCancelled(): bool
     {
-        return $this->isCancelled;
+        return $this->currentState === self::STATE_CANCELLED;
+    }
+
+    private function transitionTo(string $newState): void
+    {
+        if (!in_array($newState, self::ALLOWED_TRANSITIONS[$this->currentState])) {
+            throw new LogicException('You can not transition to the state ' . $newState);
+        }
+
+        $this->currentState = $newState;
     }
 }
