@@ -199,9 +199,23 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isFinalized());
 
-        $salesInvoice->setFinalized(true);
+        $salesInvoice->finalize();
 
         self::assertTrue($salesInvoice->isFinalized());
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_add_lines_to_a_finalized_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('finalized');
+
+        $this->addALineTo($salesInvoice);
     }
 
     /**
@@ -212,9 +226,51 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isCancelled());
 
-        $salesInvoice->setCancelled(true);
+        $salesInvoice->cancel();
 
         self::assertTrue($salesInvoice->isCancelled());
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_add_lines_to_a_cancelled_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->cancel();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $this->addALineTo($salesInvoice);
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_cancel_a_finalized_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('finalized');
+
+        $salesInvoice->cancel();
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_finalize_a_cancelled_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->cancel();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $salesInvoice->finalize();
     }
 
     /**
@@ -274,5 +330,18 @@ final class SalesInvoiceTest extends TestCase
     private function aVatRate(): float
     {
         return 21.0;
+    }
+
+    private function addALineTo(SalesInvoice $salesInvoice): void
+    {
+        $salesInvoice->addLine(
+            $this->aProductId(),
+            $this->aDescription(),
+            $this->aQuantity(),
+            $this->aTariff(),
+            $this->aDiscount(),
+            $this->aVatCode(),
+            $this->aVatRate()
+        );
     }
 }

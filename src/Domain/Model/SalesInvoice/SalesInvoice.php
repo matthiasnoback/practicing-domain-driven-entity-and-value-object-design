@@ -83,6 +83,13 @@ final class SalesInvoice
         string $vatCode,
         float $vatRate
     ): void {
+        if ($this->isFinalized) {
+            throw new LogicException('You can not add a line to a finalized invoice');
+        }
+        if ($this->isCancelled) {
+            throw new LogicException('You can not add a line to a cancelled invoice');
+        }
+
         Assertion::inArray($vatCode, ['S', 'L']);
         Assertion::greaterThan($quantity, 0.0, 'The line quantity should be greater than 0.0');
 
@@ -155,9 +162,14 @@ final class SalesInvoice
         return round($this->totalVatAmount($now) / $this->exchangeRate, 2);
     }
 
-    public function setFinalized(bool $finalized): void
+    public function finalize(): void
     {
-        $this->isFinalized = $finalized;
+        if ($this->isCancelled) {
+            throw new LogicException(
+                'You can not finalize a cancelled invoice'
+            );
+        }
+        $this->isFinalized = true;
     }
 
     public function isFinalized(): bool
@@ -165,9 +177,15 @@ final class SalesInvoice
         return $this->isFinalized;
     }
 
-    public function setCancelled(bool $cancelled): void
+    public function cancel(): void
     {
-        $this->isCancelled = $cancelled;
+        if ($this->isFinalized) {
+            throw new LogicException(
+                'You can not cancel a finalized invoice'
+            );
+        }
+
+        $this->isCancelled = true;
     }
 
     public function isCancelled(): bool
