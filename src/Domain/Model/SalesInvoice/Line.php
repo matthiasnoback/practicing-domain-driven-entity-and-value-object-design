@@ -87,12 +87,12 @@ final class Line
         return round($this->amount() - $this->discountAmount(), 2);
     }
 
-    public function vatAmount(): float
+    public function vatAmount(?DateTime $now = null): float
     {
         if ($this->vatCode === 'S') {
             $vatRate = 21.0;
         } elseif ($this->vatCode === 'L') {
-            if (new DateTime('now') < DateTime::createFromFormat('Y-m-d', '2019-01-01')) {
+            if (($now ?? new DateTime('now')) < DateTime::createFromFormat('Y-m-d', '2019-01-01')) {
                 $vatRate = 6.0;
             } else {
                 $vatRate = 9.0;

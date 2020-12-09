@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Domain\Model\SalesInvoice;
 
 use Assert\Assertion;
+use DateTime;
 use DateTimeImmutable;
 
 final class SalesInvoice
@@ -120,24 +121,24 @@ final class SalesInvoice
         return round($this->totalNetAmount() / $this->exchangeRate, 2);
     }
 
-    public function totalVatAmount(): float
+    public function totalVatAmount(?DateTime $now = null): float
     {
         $sum = 0.0;
 
         foreach ($this->lines as $line) {
-            $sum += $line->vatAmount();
+            $sum += $line->vatAmount($now);
         }
 
         return round($sum, 2);
     }
 
-    public function totalVatAmountInLedgerCurrency(): float
+    public function totalVatAmountInLedgerCurrency(?DateTime $now = null): float
     {
         if ($this->currency === 'EUR' || $this->exchangeRate == null) {
-            return $this->totalVatAmount();
+            return $this->totalVatAmount($now);
         }
 
-        return round($this->totalVatAmount() / $this->exchangeRate, 2);
+        return round($this->totalVatAmount($now) / $this->exchangeRate, 2);
     }
 
     public function setFinalized(bool $finalized): void
