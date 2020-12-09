@@ -73,31 +73,6 @@ final class SalesInvoice
         $this->quantityPrecision = $quantityPrecision;
     }
 
-    public function setCustomerId(int $customerId): void
-    {
-
-    }
-
-    public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
-    {
-
-    }
-
-    public function setCurrency(string $currency): void
-    {
-
-    }
-
-    public function setExchangeRate(?float $exchangeRate): void
-    {
-
-    }
-
-    public function setQuantityPrecision(int $quantityPrecision): void
-    {
-
-    }
-
     public function addLine(
         int $productId,
         string $description,
