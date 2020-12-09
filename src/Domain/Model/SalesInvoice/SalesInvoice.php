@@ -7,6 +7,7 @@ use Assert\Assertion;
 use DateTime;
 use DateTimeImmutable;
 use InvalidArgumentException;
+use LogicException;
 
 final class SalesInvoice
 {
@@ -83,6 +84,17 @@ final class SalesInvoice
         float $vatRate
     ): void {
         Assertion::inArray($vatCode, ['S', 'L']);
+
+        foreach ($this->lines as $line) {
+            if ($line->productId() === $productId) {
+                throw new LogicException(
+                    sprintf(
+                        'You can not add another line for product "%s"',
+                        $productId
+                    )
+                );
+            }
+        }
 
         $this->lines[] = new Line(
             $productId,

@@ -5,6 +5,7 @@ namespace Domain\Model\SalesInvoice;
 use DateTime;
 use DateTimeImmutable;
 use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 final class SalesInvoiceTest extends TestCase
@@ -139,6 +140,39 @@ final class SalesInvoiceTest extends TestCase
     /**
      * @test
      */
+    public function you_can_not_add_the_same_product_twice(): void
+    {
+        $invoice = $this->createSalesInvoice();
+
+        $productId = $this->aProductId();
+
+        $invoice->addLine(
+            $productId,
+            $this->aDescription(),
+            $this->aQuantity(),
+            $this->aTariff(),
+            $this->aDiscount(),
+            $this->aVatCode(),
+            $this->aVatRate()
+        );
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('product');
+
+        $invoice->addLine(
+            $productId, // same product ID
+            $this->aDescription(),
+            $this->aQuantity(),
+            $this->aTariff(),
+            $this->aDiscount(),
+            $this->aVatCode(),
+            $this->aVatRate()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function you_can_finalize_an_invoice(): void
     {
         $salesInvoice = $this->createSalesInvoice();
@@ -204,5 +238,20 @@ final class SalesInvoiceTest extends TestCase
     private function vatRate(string $vatCode): float
     {
         return (new VatRates())->vatRateForVatCodeAtDate(new DateTime(), $vatCode);
+    }
+
+    private function aDiscount(): Discount
+    {
+        return Discount::fromFloatPercentage(10.0);
+    }
+
+    private function aVatCode(): string
+    {
+        return 'S';
+    }
+
+    private function aVatRate(): float
+    {
+        return 21.0;
     }
 }
