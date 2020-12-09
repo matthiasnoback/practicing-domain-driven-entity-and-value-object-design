@@ -89,18 +89,23 @@ final class Line
 
     public function vatAmount(?DateTime $now = null): float
     {
-        if ($this->vatCode === 'S') {
-            $vatRate = 21.0;
-        } elseif ($this->vatCode === 'L') {
-            if (($now ?? new DateTime('now')) < DateTime::createFromFormat('Y-m-d', '2019-01-01')) {
-                $vatRate = 6.0;
-            } else {
-                $vatRate = 9.0;
-            }
-        } else {
-            throw new InvalidArgumentException('Should not happen');
-        }
+        $vatRate = $this->vatRateForVatCodeAtDate($now ?? new DateTime());
 
         return round($this->netAmount() * $vatRate / 100, 2);
+    }
+
+    private function vatRateForVatCodeAtDate(DateTime $now): float
+    {
+        if ($this->vatCode === 'S') {
+            return 21.0;
+        } elseif ($this->vatCode === 'L') {
+            if ($now < DateTime::createFromFormat('Y-m-d', '2019-01-01')) {
+                return 6.0;
+            } else {
+                return 9.0;
+            }
+        }
+
+        throw new InvalidArgumentException('Could not determine the VAT rate');
     }
 }
