@@ -2,6 +2,7 @@
 
 namespace Domain\Model\SalesInvoice;
 
+use DateTime;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,8 @@ final class SalesInvoiceTest extends TestCase
             2.0,
             15.0,
             Discount::fromFloatPercentage(10.0),
-            'S'
+            'S',
+            $this->vatRate('S')
         );
         $salesInvoice->addLine(
             2,
@@ -34,7 +36,8 @@ final class SalesInvoiceTest extends TestCase
             3.123456,
             12.50,
             Discount::noDiscount(),
-            'L'
+            'L',
+            $this->vatRate('L')
         );
 
         /*
@@ -78,7 +81,8 @@ final class SalesInvoiceTest extends TestCase
             2.0,
             15.0,
             Discount::fromFloatPercentage(10.0),
-            'S'
+            'S',
+            $this->vatRate('S')
         );
         $salesInvoice->addLine(
             $this->anotherProductId(),
@@ -86,7 +90,8 @@ final class SalesInvoiceTest extends TestCase
             3.123456,
             12.50,
             Discount::noDiscount(),
-            'L'
+            'L',
+            $this->vatRate('L')
         );
 
         self::assertEquals($salesInvoice->totalNetAmount(), $salesInvoice->totalNetAmountInLedgerCurrency());
@@ -108,7 +113,8 @@ final class SalesInvoiceTest extends TestCase
             $this->aQuantity(),
             $this->aTariff(),
             Discount::noDiscount(),
-            'Invalid VAT code'
+            'Invalid VAT code',
+            $this->vatRate('Invalid VAT code')
         );
     }
 
@@ -175,5 +181,10 @@ final class SalesInvoiceTest extends TestCase
     private function anotherProductId(): int
     {
         return 2;
+    }
+
+    private function vatRate(string $vatCode): float
+    {
+        return (new VatRates())->vatRateForVatCodeAtDate(new DateTime(), $vatCode);
     }
 }
