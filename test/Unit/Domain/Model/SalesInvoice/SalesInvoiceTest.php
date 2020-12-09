@@ -16,6 +16,7 @@ final class SalesInvoiceTest extends TestCase
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
         $salesInvoice = new SalesInvoice(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             'USD',
@@ -129,6 +130,7 @@ final class SalesInvoiceTest extends TestCase
         $this->expectExceptionMessage('exchange rate');
 
         new SalesInvoice(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             'USD',
@@ -307,6 +309,7 @@ final class SalesInvoiceTest extends TestCase
     private function createSalesInvoice(): SalesInvoice
     {
         return new SalesInvoice(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             'EUR',
@@ -371,5 +374,10 @@ final class SalesInvoiceTest extends TestCase
             $this->aVatCode(),
             $this->aVatRate()
         );
+    }
+
+    private function aSalesInvoiceId(): SalesInvoiceId
+    {
+        return SalesInvoiceId::fromString('401ea5c1-eb65-4cd2-8164-b1d3daed2354');
     }
 }

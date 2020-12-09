@@ -51,7 +51,10 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
+    private SalesInvoiceId $salesInvoiceId;
+
     public function __construct(
+        SalesInvoiceId $salesInvoiceId,
         int $customerId,
         DateTimeImmutable $invoiceDate,
         string $currency,
@@ -72,6 +75,7 @@ final class SalesInvoice
         $this->currency = $currency;
         $this->exchangeRate = $exchangeRate;
         $this->quantityPrecision = $quantityPrecision;
+        $this->salesInvoiceId = $salesInvoiceId;
     }
 
     public function addLine(
