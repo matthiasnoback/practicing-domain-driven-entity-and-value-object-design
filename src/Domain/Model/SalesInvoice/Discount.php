@@ -12,7 +12,7 @@ final class Discount
         $this->discount = $discount;
     }
 
-    public static function fromFloat(float $discount): self
+    public static function fromFloatPercentage(float $discount): self
     {
         return new self($discount);
     }

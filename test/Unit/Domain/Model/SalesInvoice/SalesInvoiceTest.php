@@ -25,7 +25,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with a 10% discount and standard VAT applied',
             2.0,
             15.0,
-            Discount::fromFloat(10.0),
+            Discount::fromFloatPercentage(10.0),
             'S'
         );
         $salesInvoice->addLine(
@@ -77,7 +77,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with a 10% discount and standard VAT applied',
             2.0,
             15.0,
-            Discount::fromFloat(10.0),
+            Discount::fromFloatPercentage(10.0),
             'S'
         );
         $salesInvoice->addLine(
