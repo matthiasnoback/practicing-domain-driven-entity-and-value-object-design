@@ -122,6 +122,23 @@ final class SalesInvoiceTest extends TestCase
     /**
      * @test
      */
+    public function you_have_to_provide_an_exchange_rate_if_the_currency_is_not_eur(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('exchange rate');
+
+        new SalesInvoice(
+            1001,
+            new DateTimeImmutable(),
+            'USD',
+            null,
+            3
+        );
+    }
+
+    /**
+     * @test
+     */
     public function you_can_finalize_an_invoice(): void
     {
         $salesInvoice = $this->createSalesInvoice();

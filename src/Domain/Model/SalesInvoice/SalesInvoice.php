@@ -6,6 +6,7 @@ namespace Domain\Model\SalesInvoice;
 use Assert\Assertion;
 use DateTime;
 use DateTimeImmutable;
+use InvalidArgumentException;
 
 final class SalesInvoice
 {
@@ -56,6 +57,15 @@ final class SalesInvoice
         ?float $exchangeRate,
         int $quantityPrecision
     ) {
+        if ($currency !== 'EUR' && $exchangeRate === null) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'You have to provide an exchange rate when creating an invoice with currency "%s"',
+                    $currency
+                )
+            );
+        }
+
         $this->customerId = $customerId;
         $this->invoiceDate = $invoiceDate;
         $this->currency = $currency;
