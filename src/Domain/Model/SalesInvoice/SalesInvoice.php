@@ -169,6 +169,13 @@ final class SalesInvoice
                 'You can not finalize a cancelled invoice'
             );
         }
+
+        if ($this->isFinalized) {
+            throw new LogicException(
+                'The invoice was already finalized'
+            );
+        }
+
         $this->isFinalized = true;
     }
 
@@ -182,6 +189,12 @@ final class SalesInvoice
         if ($this->isFinalized) {
             throw new LogicException(
                 'You can not cancel a finalized invoice'
+            );
+        }
+
+        if ($this->isCancelled) {
+            throw new LogicException(
+                'The invoice was already cancelled'
             );
         }
 

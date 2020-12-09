@@ -262,6 +262,34 @@ final class SalesInvoiceTest extends TestCase
     /**
      * @test
      */
+    public function you_can_not_cancel_an_invoice_twice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->cancel();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $salesInvoice->cancel();
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_finalize_an_invoice_twice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('finalized');
+
+        $salesInvoice->finalize();
+    }
+
+    /**
+     * @test
+     */
     public function you_can_not_finalize_a_cancelled_invoice(): void
     {
         $salesInvoice = $this->createSalesInvoice();
