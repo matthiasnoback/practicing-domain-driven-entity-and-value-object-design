@@ -84,6 +84,7 @@ final class SalesInvoice
         float $vatRate
     ): void {
         Assertion::inArray($vatCode, ['S', 'L']);
+        Assertion::greaterThan($quantity, 0.0, 'The line quantity should be greater than 0.0');
 
         foreach ($this->lines as $line) {
             if ($line->productId() === $productId) {

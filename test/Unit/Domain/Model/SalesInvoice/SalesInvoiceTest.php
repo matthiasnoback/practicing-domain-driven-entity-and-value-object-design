@@ -173,6 +173,27 @@ final class SalesInvoiceTest extends TestCase
     /**
      * @test
      */
+    public function the_quantity_should_be_greater_than_0(): void
+    {
+        $invoice = $this->createSalesInvoice();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('quantity');
+
+        $invoice->addLine(
+            $this->aProductId(),
+            $this->aDescription(),
+            0.0, // quantity below 0
+            $this->aTariff(),
+            $this->aDiscount(),
+            $this->aVatCode(),
+            $this->aVatRate()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function you_can_finalize_an_invoice(): void
     {
         $salesInvoice = $this->createSalesInvoice();
