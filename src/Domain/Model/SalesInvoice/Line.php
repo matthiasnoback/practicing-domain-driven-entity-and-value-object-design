@@ -96,16 +96,7 @@ final class Line
 
     private function vatRateForVatCodeAtDate(DateTime $now, string $vatCode): float
     {
-        if ($vatCode === 'S') {
-            return 21.0;
-        } elseif ($vatCode === 'L') {
-            if ($now < DateTime::createFromFormat('Y-m-d', '2019-01-01')) {
-                return 6.0;
-            } else {
-                return 9.0;
-            }
-        }
-
-        throw new InvalidArgumentException('Could not determine the VAT rate');
+        $vatRates = new VatRates();
+        return $vatRates->vatRateForVatCodeAtDate($now, $vatCode);
     }
 }
