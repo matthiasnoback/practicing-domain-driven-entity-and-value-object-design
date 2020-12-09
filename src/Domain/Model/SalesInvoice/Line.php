@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Domain\Model\SalesInvoice;
 
 use DateTime;
-use InvalidArgumentException;
 
 final class Line
 {
@@ -50,6 +49,8 @@ final class Line
      */
     private $exchangeRate;
 
+    private float $vatRate;
+
     public function __construct(
         int $productId,
         string $description,
@@ -69,6 +70,8 @@ final class Line
         $this->currency = $currency;
         $this->discount = $discount;
         $this->vatCode = $vatCode;
+        $this->vatRate = $this->vatRateForVatCodeAtDate($now ?? new DateTime(), $this->vatCode);
+
         $this->exchangeRate = $exchangeRate;
     }
 
@@ -89,9 +92,7 @@ final class Line
 
     public function vatAmount(?DateTime $now = null): float
     {
-        $vatRate = $this->vatRateForVatCodeAtDate($now ?? new DateTime(), $this->vatCode);
-
-        return round($this->netAmount() * $vatRate / 100, 2);
+        return round($this->netAmount() * $this->vatRate / 100, 2);
     }
 
     private function vatRateForVatCodeAtDate(DateTime $now, string $vatCode): float
