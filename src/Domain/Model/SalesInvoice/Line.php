@@ -57,7 +57,7 @@ final class Line
         int $quantityPrecision,
         float $tariff,
         string $currency,
-        ?float $discount,
+        Discount $discount,
         string $vatCode,
         ?float $exchangeRate
     ) {
@@ -67,7 +67,7 @@ final class Line
         $this->quantityPrecision = $quantityPrecision;
         $this->tariff = $tariff;
         $this->currency = $currency;
-        $this->discount = Discount::fromFloat($discount);
+        $this->discount = $discount;
         $this->vatCode = $vatCode;
         $this->exchangeRate = $exchangeRate;
     }

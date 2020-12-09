@@ -25,7 +25,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with a 10% discount and standard VAT applied',
             2.0,
             15.0,
-            10.0,
+            Discount::fromFloat(10.0),
             'S'
         );
         $salesInvoice->addLine(
@@ -33,7 +33,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with no discount and low VAT applied',
             3.123456,
             12.50,
-            null,
+            Discount::fromFloat(null),
             'L'
         );
 
@@ -77,7 +77,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with a 10% discount and standard VAT applied',
             2.0,
             15.0,
-            10.0,
+            Discount::fromFloat(10.0),
             'S'
         );
         $salesInvoice->addLine(
@@ -85,7 +85,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with no discount and low VAT applied',
             3.123456,
             12.50,
-            null,
+            Discount::fromFloat(null),
             'L'
         );
 
@@ -107,7 +107,7 @@ final class SalesInvoiceTest extends TestCase
             $this->aDescription(),
             $this->aQuantity(),
             $this->aTariff(),
-            null,
+            Discount::fromFloat(null),
             'Invalid VAT code'
         );
     }
