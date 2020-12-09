@@ -33,7 +33,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with no discount and low VAT applied',
             3.123456,
             12.50,
-            Discount::fromFloat(null),
+            Discount::noDiscount(),
             'L'
         );
 
@@ -85,7 +85,7 @@ final class SalesInvoiceTest extends TestCase
             'Product with no discount and low VAT applied',
             3.123456,
             12.50,
-            Discount::fromFloat(null),
+            Discount::noDiscount(),
             'L'
         );
 
@@ -107,7 +107,7 @@ final class SalesInvoiceTest extends TestCase
             $this->aDescription(),
             $this->aQuantity(),
             $this->aTariff(),
-            Discount::fromFloat(null),
+            Discount::noDiscount(),
             'Invalid VAT code'
         );
     }
