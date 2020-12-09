@@ -49,33 +49,43 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    public function __construct()
-    {
+    public function __construct(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        string $currency,
+        ?float $exchangeRate,
+        int $quantityPrecision
+    ) {
+        $this->customerId = $customerId;
+        $this->invoiceDate = $invoiceDate;
+        $this->currency = $currency;
+        $this->exchangeRate = $exchangeRate;
+        $this->quantityPrecision = $quantityPrecision;
     }
 
     public function setCustomerId(int $customerId): void
     {
-        $this->customerId = $customerId;
+
     }
 
     public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
     {
-        $this->invoiceDate = $invoiceDate;
+
     }
 
     public function setCurrency(string $currency): void
     {
-        $this->currency = $currency;
+
     }
 
     public function setExchangeRate(?float $exchangeRate): void
     {
-        $this->exchangeRate = $exchangeRate;
+
     }
 
     public function setQuantityPrecision(int $quantityPrecision): void
     {
-        $this->quantityPrecision = $quantityPrecision;
+
     }
 
     public function addLine(
