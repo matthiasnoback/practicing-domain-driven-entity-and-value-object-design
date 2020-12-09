@@ -88,6 +88,9 @@ final class SalesInvoice
     ): void {
         Assertion::inArray($vatCode, ['S', 'L']);
 
+        $vatRates = new VatRates();
+        $vatRate = $vatRates->vatRateForVatCodeAtDate(new DateTime(), $vatCode);
+
         $this->lines[] = new Line(
             $productId,
             $description,
@@ -97,6 +100,7 @@ final class SalesInvoice
             $this->currency,
             $discount,
             $vatCode,
+            $vatRate,
             $this->exchangeRate
         );
     }

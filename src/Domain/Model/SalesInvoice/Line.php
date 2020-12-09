@@ -60,6 +60,7 @@ final class Line
         string $currency,
         Discount $discount,
         string $vatCode,
+        float $vatRate,
         ?float $exchangeRate
     ) {
         $this->productId = $productId;
@@ -70,7 +71,7 @@ final class Line
         $this->currency = $currency;
         $this->discount = $discount;
         $this->vatCode = $vatCode;
-        $this->vatRate = $this->vatRateForVatCodeAtDate($now ?? new DateTime(), $this->vatCode);
+        $this->vatRate = $vatRate;
 
         $this->exchangeRate = $exchangeRate;
     }
@@ -93,11 +94,5 @@ final class Line
     public function vatAmount(?DateTime $now = null): float
     {
         return round($this->netAmount() * $this->vatRate / 100, 2);
-    }
-
-    private function vatRateForVatCodeAtDate(DateTime $now, string $vatCode): float
-    {
-        $vatRates = new VatRates();
-        return $vatRates->vatRateForVatCodeAtDate($now, $vatCode);
     }
 }
