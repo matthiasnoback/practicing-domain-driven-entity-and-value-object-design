@@ -4,6 +4,7 @@ namespace Domain\Model\SalesInvoice;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 final class SalesInvoiceTest extends TestCase
@@ -140,6 +141,23 @@ final class SalesInvoiceTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function a_foreign_currency_requires_an_exchange_rate_to_be_provided(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('exchange rate');
+
+        SalesInvoice::create(
+            $this->aCustomerId(),
+            $this->aDate(),
+            'USD', // a foreign currency
+            null, // but no exchange rate
+            $this->aQuantityPrecision()
+        );
+    }
+
+    /**
      * @return SalesInvoice
      */
     private function createSalesInvoice(): SalesInvoice
@@ -176,5 +194,20 @@ final class SalesInvoiceTest extends TestCase
     private function anotherProductId(): int
     {
         return 2;
+    }
+
+    private function aDate(): DateTimeImmutable
+    {
+        return new DateTimeImmutable();
+    }
+
+    private function aCustomerId(): int
+    {
+        return 1001;
+    }
+
+    private function aQuantityPrecision(): int
+    {
+        return 3;
     }
 }
