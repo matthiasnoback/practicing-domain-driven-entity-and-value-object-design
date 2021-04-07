@@ -97,17 +97,17 @@ final class Line
     public function vatAmount(): float
     {
         if ($this->vatCode === 'S') {
-            $vatRate = 21.0;
+            $vatRate = new VatRate('S', 21.0);
         } elseif ($this->vatCode === 'L') {
             if (new DateTime('now') < DateTime::createFromFormat('Y-m-d', '2019-01-01')) {
-                $vatRate = 6.0;
+                $vatRate = new VatRate('L', 6.0);
             } else {
-                $vatRate = 9.0;
+                $vatRate = new VatRate('L', 9.0);
             }
         } else {
             throw new InvalidArgumentException('Should not happen');
         }
 
-        return round($this->netAmount() * $vatRate / 100, 2);
+        return round($this->netAmount() * $vatRate->rateAsPercentage() / 100, 2);
     }
 }
