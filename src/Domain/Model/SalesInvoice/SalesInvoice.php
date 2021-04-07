@@ -51,17 +51,12 @@ final class SalesInvoice
     public function __construct(
         int $customerId
     ) {
-        $this->setCustomerId($customerId);
+        $this->customerId = $customerId;
     }
 
     public static function create(int $customerId): self
     {
         return new self($customerId);
-    }
-
-    public function setCustomerId(int $customerId): void
-    {
-        $this->customerId = $customerId;
     }
 
     public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
