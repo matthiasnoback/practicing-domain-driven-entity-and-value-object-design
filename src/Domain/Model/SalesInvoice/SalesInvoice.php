@@ -48,35 +48,34 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    public function __construct(
-        int $customerId
+    private function __construct(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        string $currency,
+        ?float $exchangeRate,
+        int $quantityPrecision
     ) {
         $this->customerId = $customerId;
-    }
-
-    public static function create(int $customerId): self
-    {
-        return new self($customerId);
-    }
-
-    public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
-    {
         $this->invoiceDate = $invoiceDate;
-    }
-
-    public function setCurrency(string $currency): void
-    {
         $this->currency = $currency;
-    }
-
-    public function setExchangeRate(?float $exchangeRate): void
-    {
         $this->exchangeRate = $exchangeRate;
+        $this->quantityPrecision = $quantityPrecision;
     }
 
-    public function setQuantityPrecision(int $quantityPrecision): void
-    {
-        $this->quantityPrecision = $quantityPrecision;
+    public static function create(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        string $currency,
+        ?float $exchangeRate,
+        int $quantityPrecision
+    ): self {
+        return new self(
+            $customerId,
+            $invoiceDate,
+            $currency,
+            $exchangeRate,
+            $quantityPrecision
+        );
     }
 
     public function addLine(
@@ -100,7 +99,8 @@ final class SalesInvoice
                 ? Discount::noDiscount()
                 : new Discount($discount),
             $vatRate = VatRate::forCodeAndDate(
-                $vatCode, $this->invoiceDate
+                $vatCode,
+                $this->invoiceDate
             ),
             $this->exchangeRate
         );
