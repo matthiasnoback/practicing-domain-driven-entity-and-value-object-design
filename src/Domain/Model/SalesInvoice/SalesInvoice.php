@@ -49,14 +49,14 @@ final class SalesInvoice
     private $invoiceDate;
 
     public function __construct(
-
-    )
-    {
+        int $customerId
+    ) {
+        $this->setCustomerId($customerId);
     }
 
-    public static function create(): self
+    public static function create(int $customerId): self
     {
-        return new self();
+        return new self($customerId);
     }
 
     public function setCustomerId(int $customerId): void
