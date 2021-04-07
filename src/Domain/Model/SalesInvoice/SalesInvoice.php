@@ -74,14 +74,13 @@ final class SalesInvoice
     }
 
     public static function create(
+        SalesInvoiceId $salesInvoiceId,
         int $customerId,
         DateTimeImmutable $invoiceDate,
         string $currency,
         ?float $exchangeRate,
         int $quantityPrecision
     ): self {
-        $salesInvoiceId = SalesInvoiceId::fromString(Uuid::uuid4()->toString());
-
         return new self(
             $salesInvoiceId,
             $customerId,
