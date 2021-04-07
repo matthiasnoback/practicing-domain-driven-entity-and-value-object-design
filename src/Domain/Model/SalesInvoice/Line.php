@@ -59,7 +59,7 @@ final class Line
         int $quantityPrecision,
         float $tariff,
         string $currency,
-        ?float $discount,
+        Discount $discount,
         VatRate $vatRate,
         ?float $exchangeRate
     ) {
@@ -69,9 +69,7 @@ final class Line
         $this->quantityPrecision = $quantityPrecision;
         $this->tariff = $tariff;
         $this->currency = $currency;
-        $this->discount = $discount === null
-            ? Discount::noDiscount()
-            : new Discount($discount);
+        $this->discount = $discount;
         $this->vatRate = $vatRate;
         $this->exchangeRate = $exchangeRate;
     }

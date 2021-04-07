@@ -94,7 +94,9 @@ final class SalesInvoice
             $this->quantityPrecision,
             $tariff,
             $this->currency,
-            $discount,
+            $discount === null
+                ? Discount::noDiscount()
+                : new Discount($discount),
             $vatRate = VatRate::forCodeAndDate(
                 $vatCode, $this->invoiceDate
             ),
