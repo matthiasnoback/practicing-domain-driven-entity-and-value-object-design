@@ -48,8 +48,15 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    public function __construct()
+    public function __construct(
+
+    )
     {
+    }
+
+    public static function create(): self
+    {
+        return new self();
     }
 
     public function setCustomerId(int $customerId): void
