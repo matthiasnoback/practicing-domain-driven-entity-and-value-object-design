@@ -38,7 +38,7 @@ final class Line
     private $currency;
 
     /**
-     * @var float|null
+     * @var Discount
      */
     private $discount;
 
@@ -69,7 +69,9 @@ final class Line
         $this->quantityPrecision = $quantityPrecision;
         $this->tariff = $tariff;
         $this->currency = $currency;
-        $this->discount = $discount;
+        $this->discount = $discount === null
+            ? Discount::noDiscount()
+            : new Discount($discount);
         $this->vatRate = $vatRate;
         $this->exchangeRate = $exchangeRate;
     }
@@ -81,9 +83,7 @@ final class Line
 
     public function discountAmount(): float
     {
-        $discount = new Discount($this->discount ?? 0.0);
-
-        return $discount->calculateFor($this->amount());
+        return $this->discount->calculateFor($this->amount());
     }
 
     public function netAmount(): float

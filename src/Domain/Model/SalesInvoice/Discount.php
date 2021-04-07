@@ -16,4 +16,9 @@ final class Discount
     {
         return round($amount * $this->percentage / 100, 2);
     }
+
+    public static function noDiscount(): self
+    {
+        return new self(0.0);
+    }
 }
