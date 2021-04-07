@@ -81,11 +81,9 @@ final class Line
 
     public function discountAmount(): float
     {
-        if ($this->discount === null) {
-            return 0.0;
-        }
+        $discount = new Discount($this->discount ?? 0.0);
 
-        return round($this->amount() * $this->discount / 100, 2);
+        return $discount->calculateFor($this->amount());
     }
 
     public function netAmount(): float
