@@ -43,9 +43,9 @@ final class Line
     private $discount;
 
     /**
-     * @var string
+     * @var VatRate
      */
-    private $vatCode;
+    private $vatRate;
 
     /**
      * @var float|null
@@ -60,7 +60,7 @@ final class Line
         float $tariff,
         string $currency,
         ?float $discount,
-        string $vatCode,
+        VatRate $vatRate,
         ?float $exchangeRate
     ) {
         $this->productId = $productId;
@@ -70,7 +70,7 @@ final class Line
         $this->tariff = $tariff;
         $this->currency = $currency;
         $this->discount = $discount;
-        $this->vatCode = $vatCode;
+        $this->vatRate = $vatRate;
         $this->exchangeRate = $exchangeRate;
     }
 
@@ -95,10 +95,6 @@ final class Line
 
     public function vatAmount(): float
     {
-        $vatRate = VatRate::fromCodeAndCurrentDate(
-            $this->vatCode, new DateTimeImmutable('now')
-        );
-
-        return $vatRate->calculateVatForAmount($this->netAmount());
+        return $this->vatRate->calculateVatForAmount($this->netAmount());
     }
 }
