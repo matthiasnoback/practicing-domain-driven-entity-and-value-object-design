@@ -35,16 +35,16 @@ final class VatRate
         );
     }
 
-    public static function fromCodeAndCurrentDate(
+    public static function forCodeAndDate(
         string $code,
-        DateTimeImmutable $currentDate
+        DateTimeImmutable $date
     ): self {
         if ($code === 'S') {
             return new VatRate($code, 21.0);
         }
 
         if ($code === 'L') {
-            if ($currentDate < DateTimeImmutable::createFromFormat('Y-m-d', '2019-01-01')) {
+            if ($date < DateTimeImmutable::createFromFormat('Y-m-d', '2019-01-01')) {
                 return new VatRate($code, 6.0);
             }
 

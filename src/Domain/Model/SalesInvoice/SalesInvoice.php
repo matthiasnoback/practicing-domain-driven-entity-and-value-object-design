@@ -95,7 +95,7 @@ final class SalesInvoice
             $tariff,
             $this->currency,
             $discount,
-            $vatRate = VatRate::fromCodeAndCurrentDate(
+            $vatRate = VatRate::forCodeAndDate(
                 $vatCode, $this->invoiceDate
             ),
             $this->exchangeRate
