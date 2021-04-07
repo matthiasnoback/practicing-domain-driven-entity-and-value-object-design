@@ -23,4 +23,11 @@ final class VatRate
     {
         return $this->rateAsPercentage;
     }
+
+    public function calculateVatForAmount(float $amount): float
+    {
+        return round(
+            $amount * ($this->rateAsPercentage() / 100), 2
+        );
+    }
 }

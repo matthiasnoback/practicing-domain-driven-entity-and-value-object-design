@@ -108,6 +108,6 @@ final class Line
             throw new InvalidArgumentException('Should not happen');
         }
 
-        return round($this->netAmount() * $vatRate->rateAsPercentage() / 100, 2);
+        return $vatRate->calculateVatForAmount($this->netAmount());
     }
 }
