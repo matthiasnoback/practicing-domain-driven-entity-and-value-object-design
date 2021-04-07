@@ -6,6 +6,7 @@ namespace Domain\Model\SalesInvoice;
 use Assert\Assertion;
 use DateTimeImmutable;
 use LogicException;
+use Ramsey\Uuid\Uuid;
 
 final class SalesInvoice
 {
@@ -49,7 +50,10 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
+    private SalesInvoiceId $salesInvoiceId;
+
     private function __construct(
+        SalesInvoiceId $salesInvoiceId,
         int $customerId,
         DateTimeImmutable $invoiceDate,
         string $currency,
@@ -66,6 +70,7 @@ final class SalesInvoice
         $this->currency = $currency;
         $this->exchangeRate = $exchangeRate;
         $this->quantityPrecision = $quantityPrecision;
+        $this->salesInvoiceId = $salesInvoiceId;
     }
 
     public static function create(
@@ -75,7 +80,10 @@ final class SalesInvoice
         ?float $exchangeRate,
         int $quantityPrecision
     ): self {
+        $salesInvoiceId = SalesInvoiceId::fromString(Uuid::uuid4()->toString());
+
         return new self(
+            $salesInvoiceId,
             $customerId,
             $invoiceDate,
             $currency,
