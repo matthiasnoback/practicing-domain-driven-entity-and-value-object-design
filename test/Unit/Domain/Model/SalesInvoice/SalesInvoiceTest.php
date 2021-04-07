@@ -122,7 +122,7 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isFinalized());
 
-        $salesInvoice->setFinalized(true);
+        $salesInvoice->finalize();
 
         self::assertTrue($salesInvoice->isFinalized());
     }
@@ -135,7 +135,7 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isCancelled());
 
-        $salesInvoice->setCancelled(true);
+        $salesInvoice->cancel();
 
         self::assertTrue($salesInvoice->isCancelled());
     }
@@ -176,6 +176,62 @@ final class SalesInvoiceTest extends TestCase
         $this->expectExceptionMessage('product');
 
         $salesInvoice->addLine(1, '', 1.0, 2.0, null, 'S');
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_cancel_a_finalized_invoice(): void
+    {
+        $finalizedInvoice = $this->createSalesInvoice();
+        $finalizedInvoice->finalize();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('finalized');
+
+        $finalizedInvoice->cancel();
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_finalize_a_cancelled_invoice(): void
+    {
+        $cancelledInvoice = $this->createSalesInvoice();
+        $cancelledInvoice->cancel();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $cancelledInvoice->finalize();
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_add_a_line_to_a_cancelled_invoice(): void
+    {
+        $cancelledInvoice = $this->createSalesInvoice();
+        $cancelledInvoice->cancel();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $cancelledInvoice->addLine(1, '', 1.0, 2.0, null, 'S');
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_add_a_line_to_a_finalized_invoice(): void
+    {
+        $finalizedInvoice = $this->createSalesInvoice();
+        $finalizedInvoice->finalize();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('finalized');
+
+        $finalizedInvoice->addLine(1, '', 1.0, 2.0, null, 'S');
     }
 
     /**
