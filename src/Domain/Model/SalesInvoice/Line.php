@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Domain\Model\SalesInvoice;
 
+use Assert\Assert;
 use DateTimeImmutable;
 
 final class Line
@@ -63,6 +64,8 @@ final class Line
         VatRate $vatRate,
         ?float $exchangeRate
     ) {
+        Assert::that($quantity)->greaterThan(0.0);
+
         $this->productId = $productId;
         $this->description = $description;
         $this->quantity = $quantity;
@@ -92,5 +95,10 @@ final class Line
     public function vatAmount(): float
     {
         return $this->vatRate->calculateVatForAmount($this->netAmount());
+    }
+
+    public function productId(): int
+    {
+        return $this->productId;
     }
 }

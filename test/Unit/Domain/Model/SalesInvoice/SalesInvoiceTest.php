@@ -158,6 +158,27 @@ final class SalesInvoiceTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function you_can_not_add_the_same_product_twice(): void
+    {
+        $salesInvoice = SalesInvoice::create(
+            $this->aCustomerId(),
+            $this->aDate(),
+            'EUR',
+            null, // but no exchange rate
+            $this->aQuantityPrecision()
+        );
+
+        $salesInvoice->addLine(1, '', 1.0, 2.0, null, 'S');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('product');
+
+        $salesInvoice->addLine(1, '', 1.0, 2.0, null, 'S');
+    }
+
+    /**
      * @return SalesInvoice
      */
     private function createSalesInvoice(): SalesInvoice

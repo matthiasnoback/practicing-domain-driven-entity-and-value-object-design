@@ -94,6 +94,12 @@ final class SalesInvoice
     ): void {
         Assertion::inArray($vatCode, ['S', 'L']);
 
+        foreach ($this->lines as $line) {
+            if ($line->productId() === $productId) {
+                throw new LogicException('The invoice already has a line with this product');
+            }
+        }
+
         $this->lines[] = new Line(
             $productId,
             $description,
