@@ -74,15 +74,18 @@ final class SalesInvoice
     }
 
     public static function create(
-        SalesInvoiceId $salesInvoiceId,
+        SalesInvoiceRepository $salesInvoiceRepository,
+        Clock $clock,
         int $customerId,
         DateTimeImmutable $invoiceDate,
         string $currency,
         ?float $exchangeRate,
         int $quantityPrecision
     ): self {
+        $now = $clock->currentTime();
+
         return new self(
-            $salesInvoiceId,
+            $salesInvoiceRepository->nextIdentity(),
             $customerId,
             $invoiceDate,
             $currency,
