@@ -1,0 +1,27 @@
+name: Code Analysis
+
+on:
+    pull_request: null
+    push:
+        branches:
+            - master
+
+jobs:
+    code_analysis:
+        strategy:
+            fail-fast: false
+            matrix:
+                actions:
+                    -
+                        name: "Test everything"
+                        run: bin/run_tests
+
+        name: ${{ matrix.actions.name }}
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   run: bin/install
+
+            -   run: ${{ matrix.actions.run }}
