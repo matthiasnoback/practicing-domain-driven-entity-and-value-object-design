@@ -83,11 +83,14 @@ final class Line
 
     public function discountAmount(): float
     {
+        // @TODO return Money
         if ($this->discount === null) {
             return 0.0;
         }
 
-        return round($this->amount()->getAmount() * $this->discount / 100, 2);
+        // @TODO add function to Money to calculate discount amount
+        // @TODO add DiscountPercentage VO
+        return $this->amount()->calculateDiscount($this->discount)->getAmount();
     }
 
     public function netAmount(): float
