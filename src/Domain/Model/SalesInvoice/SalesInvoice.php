@@ -90,8 +90,7 @@ final class SalesInvoice
             $quantity,
             $this->quantityPrecision,
             $tariff,
-            // @TODO stop using toString()!
-            $this->currency->toString(),
+            $this->currency,
             $discount,
             $vatCode,
             $this->exchangeRate
