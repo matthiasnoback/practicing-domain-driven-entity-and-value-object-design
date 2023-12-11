@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Domain\Model\SalesInvoice;
 
+use LogicException;
+
 final class Money
 {
     private float $amount;
@@ -30,5 +32,15 @@ final class Money
             round($this->amount * $percentage / 100, 2),
             $this->currency
         );
+    }
+
+    public function substract(Money $other): self
+    {
+        if (! $this->currency->isSameAs($other->currency)) {
+            throw new LogicException('Currencies should be the same');
+        }
+        // @TODO should we allow negative values?
+
+        return new Money($this->amount - $other->amount, $this->currency);
     }
 }

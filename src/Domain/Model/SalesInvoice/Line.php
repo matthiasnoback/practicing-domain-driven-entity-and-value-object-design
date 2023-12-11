@@ -81,21 +81,21 @@ final class Line
         );
     }
 
-    public function discountAmount(): float
+    public function discountAmount(): Money
     {
-        // @TODO return Money
         if ($this->discount === null) {
-            return 0.0;
+            return new Money(0.0, $this->currency);
         }
 
-        // @TODO add function to Money to calculate discount amount
         // @TODO add DiscountPercentage VO
-        return $this->amount()->calculateDiscount($this->discount)->getAmount();
+        return $this->amount()->calculateDiscount($this->discount);
     }
 
     public function netAmount(): float
     {
-        return round($this->amount()->getAmount() - $this->discountAmount(), 2);
+        // @TODO return Money
+        // @TODO move calculation to Money, calculateNetAmount() -> subtract()
+        return round($this->amount()->getAmount() - $this->discountAmount()->getAmount(), 2);
     }
 
     public function vatAmount(): float

@@ -29,4 +29,9 @@ class Currency
     {
         return $this->currency === 'EUR';
     }
+
+    public function isSameAs(Currency $other): bool
+    {
+        return $this->currency === $other->currency;
+    }
 }
