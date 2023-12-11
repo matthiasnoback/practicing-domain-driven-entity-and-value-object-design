@@ -24,7 +24,7 @@ final class MoneyTest extends TestCase
 
         $this->assertSame(
             60.0,
-            $money1->substract($money2)->getAmount()
+            $money1->subtract($money2)->getAmount()
         );
     }
 
@@ -35,6 +35,6 @@ final class MoneyTest extends TestCase
 
         $this->expectException(LogicException::class);
 
-        $money1->substract($money2)->getAmount();
+        $money1->subtract($money2)->getAmount();
     }
 }

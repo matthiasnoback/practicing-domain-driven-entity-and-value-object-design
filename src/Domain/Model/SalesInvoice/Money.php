@@ -34,7 +34,7 @@ final class Money
         );
     }
 
-    public function substract(Money $other): self
+    public function subtract(Money $other): self
     {
         if (! $this->currency->isSameAs($other->currency)) {
             throw new LogicException('Currencies should be the same');

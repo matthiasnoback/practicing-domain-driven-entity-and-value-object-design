@@ -26,9 +26,9 @@ final class SalesInvoice
     private $quantityPrecision;
 
     /**
-     * @var Line[]
+     * @var array<Line>
      */
-    private $lines = [];
+    private array $lines = [];
 
     /**
      * @var bool
@@ -102,7 +102,8 @@ final class SalesInvoice
         $sum = 0.0;
 
         foreach ($this->lines as $line) {
-            $sum += $line->netAmount();
+            // @TODO use a new add() function on Money
+            $sum += $line->netAmount()->getAmount();
         }
 
         return round($sum, 2);

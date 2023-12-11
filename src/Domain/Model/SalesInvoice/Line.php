@@ -91,11 +91,9 @@ final class Line
         return $this->amount()->calculateDiscount($this->discount);
     }
 
-    public function netAmount(): float
+    public function netAmount(): Money
     {
-        // @TODO return Money
-        // @TODO move calculation to Money, calculateNetAmount() -> subtract()
-        return round($this->amount()->getAmount() - $this->discountAmount()->getAmount(), 2);
+        return $this->amount()->subtract($this->discountAmount());
     }
 
     public function vatAmount(): float
@@ -112,6 +110,6 @@ final class Line
             throw new InvalidArgumentException('Should not happen');
         }
 
-        return round($this->netAmount() * $vatRate / 100, 2);
+        return round($this->netAmount()->getAmount() * $vatRate / 100, 2);
     }
 }
