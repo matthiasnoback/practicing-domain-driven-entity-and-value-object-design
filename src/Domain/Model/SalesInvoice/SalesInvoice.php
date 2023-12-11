@@ -92,7 +92,8 @@ final class SalesInvoice
             $tariff,
             $discount,
             $vatCode,
-            $this->exchangeRate
+            $this->exchangeRate,
+            $this->currency
         );
     }
 

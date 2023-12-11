@@ -49,6 +49,8 @@ final class Line
      */
     private $exchangeRate;
 
+    private Currency $currency;
+
     public function __construct(
         int $productId,
         string $description,
@@ -57,7 +59,8 @@ final class Line
         float $tariff,
         ?float $discount,
         string $vatCode,
-        ?float $exchangeRate
+        ?float $exchangeRate,
+        Currency $currency
     ) {
         $this->productId = $productId;
         $this->description = $description;
@@ -67,11 +70,15 @@ final class Line
         $this->discount = $discount;
         $this->vatCode = $vatCode;
         $this->exchangeRate = $exchangeRate;
+        $this->currency = $currency;
     }
 
-    public function amount(): float
+    public function amount(): Money
     {
-        return round(round($this->quantity, $this->quantityPrecision) * $this->tariff, 2);
+        return new Money(
+            round(round($this->quantity, $this->quantityPrecision) * $this->tariff, 2),
+            $this->currency
+        );
     }
 
     public function discountAmount(): float
@@ -80,12 +87,12 @@ final class Line
             return 0.0;
         }
 
-        return round($this->amount() * $this->discount / 100, 2);
+        return round($this->amount()->getAmount() * $this->discount / 100, 2);
     }
 
     public function netAmount(): float
     {
-        return round($this->amount() - $this->discountAmount(), 2);
+        return round($this->amount()->getAmount() - $this->discountAmount(), 2);
     }
 
     public function vatAmount(): float
