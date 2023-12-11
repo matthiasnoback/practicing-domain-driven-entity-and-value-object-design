@@ -90,7 +90,6 @@ final class SalesInvoice
             $quantity,
             $this->quantityPrecision,
             $tariff,
-            $this->currency,
             $discount,
             $vatCode,
             $this->exchangeRate

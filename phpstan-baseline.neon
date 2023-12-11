@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property Domain\\\\Model\\\\SalesInvoice\\\\Line\\:\\:\\$currency is never read, only written\\.$#"
-			count: 1
-			path: src/Domain/Model/SalesInvoice/Line.php
-
-		-
 			message: "#^Property Domain\\\\Model\\\\SalesInvoice\\\\Line\\:\\:\\$description is never read, only written\\.$#"
 			count: 1
 			path: src/Domain/Model/SalesInvoice/Line.php

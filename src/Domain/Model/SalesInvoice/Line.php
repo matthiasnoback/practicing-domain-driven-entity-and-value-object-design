@@ -33,7 +33,6 @@ final class Line
      */
     private $tariff;
 
-    private Currency $currency;
 
     /**
      * @var float|null
@@ -56,7 +55,6 @@ final class Line
         float $quantity,
         int $quantityPrecision,
         float $tariff,
-        Currency $currency,
         ?float $discount,
         string $vatCode,
         ?float $exchangeRate
@@ -66,7 +64,6 @@ final class Line
         $this->quantity = $quantity;
         $this->quantityPrecision = $quantityPrecision;
         $this->tariff = $tariff;
-        $this->currency = $currency;
         $this->discount = $discount;
         $this->vatCode = $vatCode;
         $this->exchangeRate = $exchangeRate;
