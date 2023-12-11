@@ -3,13 +3,20 @@ declare(strict_types=1);
 
 namespace Domain\Model\SalesInvoice;
 
+use InvalidArgumentException;
+
 class Currency
 {
+    private const CURRENCIES = ['EUR', 'USD'];
+
     private string $currency;
 
     public function __construct(string $currency)
     {
-        // @TODO Have a check: is a known currency? Throw exception otherwise
+        if (! in_array($currency, self::CURRENCIES)) {
+            throw new InvalidArgumentException('Unknown currency: ' . $currency);
+        }
+
         $this->currency = $currency;
     }
 
