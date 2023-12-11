@@ -2,14 +2,18 @@ version: '3'
 
 services:
     php:
-        image: php:7.4-cli-alpine
+        image: php:8.2-cli-alpine
         working_dir: /app
         volumes:
             - ./:/app:cached
         user: ${HOST_UID}:${HOST_GID}
+        env_file:
+            - .env
 
     composer:
         image: composer:latest
         volumes:
             - ./:/app:cached
         user: ${HOST_UID}:${HOST_GID}
+        env_file:
+            - .env
