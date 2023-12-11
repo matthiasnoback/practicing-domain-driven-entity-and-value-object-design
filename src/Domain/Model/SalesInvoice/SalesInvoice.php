@@ -90,6 +90,7 @@ final class SalesInvoice
             $quantity,
             $this->quantityPrecision,
             $tariff,
+            // @TODO stop using toString()!
             $this->currency->toString(),
             $discount,
             $vatCode,
@@ -111,7 +112,7 @@ final class SalesInvoice
     public function totalNetAmountInLedgerCurrency(): float
     {
         // @TODO Have a function isLedgerCurrency() on Currency
-        if ($this->currency->toString() === 'EUR' || $this->exchangeRate == null) {
+        if ($this->currency->isLedgerCurrency() || $this->exchangeRate == null) {
             return $this->totalNetAmount();
         }
 
@@ -132,7 +133,7 @@ final class SalesInvoice
     public function totalVatAmountInLedgerCurrency(): float
     {
         // @TODO Have a function isLedgerCurrency() on Currency
-        if ($this->currency->toString() === 'EUR' || $this->exchangeRate == null) {
+        if ($this->currency->isLedgerCurrency() || $this->exchangeRate == null) {
             return $this->totalVatAmount();
         }
 

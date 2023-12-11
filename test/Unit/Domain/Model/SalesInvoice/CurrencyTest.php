@@ -21,4 +21,16 @@ final class CurrencyTest extends TestCase
         $currency = new Currency($currencyString);
         $this->assertSame($currencyString, $currency->toString());
     }
+
+    public function test_is_ledger_currency(): void
+    {
+        $currency = new Currency('EUR');
+        $this->assertTrue($currency->isLedgerCurrency());
+    }
+
+    public function test_is_not_a_ledger_currency(): void
+    {
+        $currency = new Currency('USD');
+        $this->assertFalse($currency->isLedgerCurrency());
+    }
 }
