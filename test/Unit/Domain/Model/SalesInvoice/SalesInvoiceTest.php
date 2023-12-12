@@ -21,20 +21,30 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice->setQuantityPrecision(3);
 
         $salesInvoice->addLine(
-            1,
-            'Product with a 10% discount and standard VAT applied',
-            2.0,
-            15.0,
-            10.0,
-            'S'
+            new Line(
+                1,
+                'Product with a 10% discount and standard VAT applied',
+                2.0,
+                $salesInvoice->getQuantityPrecision(),
+                15.0,
+                10.0,
+                'S',
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
         );
         $salesInvoice->addLine(
-            2,
-            'Product with no discount and low VAT applied',
-            3.123456,
-            12.50,
-            null,
-            'L'
+            new Line(
+                2,
+                'Product with no discount and low VAT applied',
+                3.123456,
+                $salesInvoice->getQuantityPrecision(),
+                12.50,
+                null,
+                'L',
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
         );
 
         /*
@@ -73,20 +83,30 @@ final class SalesInvoiceTest extends TestCase
     {
         $salesInvoice = $this->createSalesInvoice();
         $salesInvoice->addLine(
-            $this->aProductId(),
-            'Product with a 10% discount and standard VAT applied',
-            2.0,
-            15.0,
-            10.0,
-            'S'
+            new Line(
+                $this->aProductId(),
+                'Product with a 10% discount and standard VAT applied',
+                2.0,
+                $salesInvoice->getQuantityPrecision(),
+                15.0,
+                10.0,
+                'S',
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
         );
         $salesInvoice->addLine(
-            $this->anotherProductId(),
-            'Product with no discount and low VAT applied',
-            3.123456,
-            12.50,
-            null,
-            'L'
+            new Line(
+                $this->anotherProductId(),
+                'Product with no discount and low VAT applied',
+                3.123456,
+                $salesInvoice->getQuantityPrecision(),
+                12.50,
+                null,
+                'L',
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
         );
 
         self::assertEquals($salesInvoice->totalNetAmount(), $salesInvoice->totalNetAmountInLedgerCurrency());
@@ -103,12 +123,17 @@ final class SalesInvoiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $salesInvoice->addLine(
-            $this->aProductId(),
-            $this->aDescription(),
-            $this->aQuantity(),
-            $this->aTariff(),
-            null,
-            'Invalid VAT code'
+            new Line(
+                $this->aProductId(),
+                $this->aDescription(),
+                $this->aQuantity(),
+                $salesInvoice->getQuantityPrecision(),
+                $this->aTariff(),
+                null,
+                'Invalid VAT code',
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
         );
     }
 

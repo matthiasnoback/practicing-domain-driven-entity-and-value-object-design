@@ -75,26 +75,9 @@ final class SalesInvoice
     }
 
     public function addLine(
-        int $productId,
-        string $description,
-        float $quantity,
-        float $tariff,
-        ?float $discount,
-        string $vatCode
+        Line $line
     ): void {
-        Assertion::inArray($vatCode, ['S', 'L']);
-
-        $this->lines[] = new Line(
-            $productId,
-            $description,
-            $quantity,
-            $this->quantityPrecision,
-            $tariff,
-            $discount,
-            $vatCode,
-            $this->exchangeRate,
-            $this->currency
-        );
+        $this->lines[] = $line;
     }
 
     public function totalNetAmount(): float
@@ -156,5 +139,20 @@ final class SalesInvoice
     public function isCancelled(): bool
     {
         return $this->isCancelled;
+    }
+
+    public function getQuantityPrecision(): int
+    {
+        return $this->quantityPrecision;
+    }
+
+    public function getExchangeRate(): ?float
+    {
+        return $this->exchangeRate;
+    }
+
+    public function getCurrency(): Currency
+    {
+        return $this->currency;
     }
 }
