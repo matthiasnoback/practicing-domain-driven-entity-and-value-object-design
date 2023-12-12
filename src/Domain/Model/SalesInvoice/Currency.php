@@ -20,6 +20,16 @@ class Currency
         $this->currency = $currency;
     }
 
+    public static function EUR(): self
+    {
+        return new self('EUR');
+    }
+
+    public static function USD(): self
+    {
+        return new self('USD');
+    }
+
     public function toString(): string
     {
         return $this->currency;

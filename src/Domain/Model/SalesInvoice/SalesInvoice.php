@@ -45,33 +45,31 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    public function __construct()
+    private function __construct(
+        /* args */)
     {
     }
 
-    public function setCustomerId(int $customerId): void
+    public static function create(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        Currency $currency,
+        ?float $exchangeRate,
+        int $quantityPrecision
+        /* args */): self
     {
-        $this->customerId = $customerId;
-    }
+        // Nice, because: in future we can have different invoice
+        // Nice, because: a way to introduce a domain concept in our code, Meetup::schedule(), Book::draft()
+        // Not nice, because: YAGNI
 
-    public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
-    {
-        $this->invoiceDate = $invoiceDate;
-    }
+        $instance = new self();
+        $instance->customerId = $customerId;
+        $instance->invoiceDate = $invoiceDate;
+        $instance->currency = $currency;
+        $instance->exchangeRate = $exchangeRate;
+        $instance->quantityPrecision = $quantityPrecision;
 
-    public function setCurrency(string $currency): void
-    {
-        $this->currency = new Currency($currency);
-    }
-
-    public function setExchangeRate(?float $exchangeRate): void
-    {
-        $this->exchangeRate = $exchangeRate;
-    }
-
-    public function setQuantityPrecision(int $quantityPrecision): void
-    {
-        $this->quantityPrecision = $quantityPrecision;
+        return $instance;
     }
 
     public function addLine(
