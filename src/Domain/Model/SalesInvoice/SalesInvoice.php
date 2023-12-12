@@ -85,9 +85,15 @@ final class SalesInvoice
     }
 
     public function addLine(
-        Line $line
+        Line $newLine
     ): void {
-        $this->lines[] = $line;
+        foreach ($this->lines as $existingLine) {
+            if ($existingLine->getProductId() === $newLine->getProductId()) {
+                throw new \InvalidArgumentException('You can only add a product once');
+            }
+        }
+
+        $this->lines[] = $newLine;
     }
 
     public function totalNetAmount(): float

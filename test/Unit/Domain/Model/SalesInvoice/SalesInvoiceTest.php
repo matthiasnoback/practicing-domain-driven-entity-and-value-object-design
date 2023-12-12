@@ -164,6 +164,9 @@ final class SalesInvoiceTest extends TestCase
         self::assertTrue($salesInvoice->isCancelled());
     }
 
+    /**
+     * @return array<array<float>>
+     */
     public static function invalidQuantities(): array
     {
         return [
@@ -187,6 +190,44 @@ final class SalesInvoiceTest extends TestCase
                 $this->aProductId(),
                 $this->aDescription(),
                 $quantity,
+                $salesInvoice->getQuantityPrecision(),
+                $this->aTariff(),
+                null,
+                $this->aVatCode(),
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
+        );
+    }
+
+    public function test_we_can_add_a_product_only_once(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+
+        $sameProductId = $this->aProductId();
+
+        $salesInvoice->addLine(
+            new Line(
+                $sameProductId,
+                $this->aDescription(),
+                $this->aQuantity(),
+                $salesInvoice->getQuantityPrecision(),
+                $this->aTariff(),
+                null,
+                $this->aVatCode(),
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('product');
+
+        $salesInvoice->addLine(
+            new Line(
+                $sameProductId,
+                $this->aDescription(),
+                $this->aQuantity(),
                 $salesInvoice->getQuantityPrecision(),
                 $this->aTariff(),
                 null,
