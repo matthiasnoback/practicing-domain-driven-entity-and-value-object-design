@@ -22,6 +22,8 @@ class Currency
 
     public static function EUR(): self
     {
+        // keep a "cache", return if already created
+        // "memoization"
         return new self('EUR');
     }
 

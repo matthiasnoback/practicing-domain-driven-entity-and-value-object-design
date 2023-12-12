@@ -66,7 +66,19 @@ final class SalesInvoice
         $instance->customerId = $customerId;
         $instance->invoiceDate = $invoiceDate;
         $instance->currency = $currency;
+
+        if (! $currency->isLedgerCurrency() && $exchangeRate === null) {
+            throw new \LogicException('An exchange rate is required when currency is not ledger currency');
+        }
+        if ($currency->isLedgerCurrency() && $exchangeRate !== null) {
+            throw new \LogicException('An exchange rate should not be provided when currency is ledger currency');
+        }
+        // @TODO introduce ExchangeRate object
+        if ($exchangeRate !== null && $exchangeRate <= 0) {
+            throw new \InvalidArgumentException('ER should be positive');
+        }
         $instance->exchangeRate = $exchangeRate;
+
         $instance->quantityPrecision = $quantityPrecision;
 
         return $instance;
