@@ -85,8 +85,25 @@ final class SalesInvoice
     }
 
     public function addLine(
-        Line $newLine
+        int $productId,
+        string $description,
+        float $quantity,
+        float $tariff,
+        ?float $discount,
+        string $vatCode
     ): void {
+        $newLine = new Line(
+            $productId,
+            $description,
+            $quantity,
+            $this->quantityPrecision,
+            $tariff,
+            $discount,
+            $vatCode,
+            $this->exchangeRate,
+            $this->currency
+        );
+
         foreach ($this->lines as $existingLine) {
             if ($existingLine->getProductId() === $newLine->getProductId()) {
                 throw new \InvalidArgumentException('You can only add a product once');
