@@ -164,6 +164,39 @@ final class SalesInvoiceTest extends TestCase
         self::assertTrue($salesInvoice->isCancelled());
     }
 
+    public static function invalidQuantities(): array
+    {
+        return [
+            [-0.5],
+            [0.0],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidQuantities
+     */
+    public function test_add_line_requires_positive_quantity(float $quantity): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Quantity');
+
+        $salesInvoice->addLine(
+            new Line(
+                $this->aProductId(),
+                $this->aDescription(),
+                $quantity,
+                $salesInvoice->getQuantityPrecision(),
+                $this->aTariff(),
+                null,
+                $this->aVatCode(),
+                $salesInvoice->getExchangeRate(),
+                $salesInvoice->getCurrency()
+            )
+        );
+    }
+
     /**
      * @return SalesInvoice
      */
@@ -203,5 +236,10 @@ final class SalesInvoiceTest extends TestCase
     private function anotherProductId(): int
     {
         return 2;
+    }
+
+    private function aVatCode(): string
+    {
+        return 'S';
     }
 }

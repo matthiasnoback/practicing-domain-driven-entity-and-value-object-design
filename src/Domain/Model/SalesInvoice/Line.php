@@ -64,6 +64,9 @@ final class Line
         Currency $currency
     ) {
         Assertion::inArray($vatCode, ['S', 'L']);
+        if ($quantity <= 0.0) {
+            throw new \InvalidArgumentException('Quantity should be more than 0.0');
+        }
 
         $this->productId = $productId;
         $this->description = $description;
