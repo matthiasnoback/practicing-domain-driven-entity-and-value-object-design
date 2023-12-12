@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Domain\Model\SalesInvoice;
 
+use Assert\Assertion;
 use DateTime;
 use InvalidArgumentException;
 
@@ -64,6 +65,8 @@ final class Line
         string $vatCode,
         ?float $exchangeRate
     ) {
+        Assertion::inArray($vatCode, ['S', 'L']);
+
         $this->productId = $productId;
         $this->description = $description;
         $this->quantity = $quantity;
