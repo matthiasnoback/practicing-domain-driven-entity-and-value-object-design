@@ -27,4 +27,9 @@ class Currency
     {
         return $this->currencyCode;
     }
+
+    public function isLedgerCurrency(): bool
+    {
+        return $this->currencyCode === 'EUR';
+    }
 }

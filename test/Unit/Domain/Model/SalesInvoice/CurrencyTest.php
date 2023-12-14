@@ -13,8 +13,8 @@ final class CurrencyTest extends TestCase
     public static function correctCurrencies(): array
     {
         return [
-            ['USD'],
-            ['EUR'],
+            'USD' => ['USD'],
+            'EUR' => ['EUR'],
         ];
     }
 
@@ -26,12 +26,22 @@ final class CurrencyTest extends TestCase
         $this->assertSame($currencyCode, Currency::createWith($currencyCode)->toString());
     }
 
-    public function test_invalid_code(): void
+    public function test_unsupported_codes_are_forbidden(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         Currency::createWith('BTC');
     }
-    // @TODO add a function for "if ledger currency"
+
+    public function test_EUR_is_ledger_currency(): void
+    {
+        $this->assertTrue(Currency::createWith('EUR')->isLedgerCurrency());
+    }
+
+    public function test_other_currencies_are_not_ledger_currency(): void
+    {
+        $this->assertFalse(Currency::createWith('USD')->isLedgerCurrency());
+    }
+
     // @TODO currency conversion using exchange rate
 }
