@@ -7,13 +7,31 @@ use PHPUnit\Framework\TestCase;
 
 final class CurrencyTest extends TestCase
 {
-    public function test_correct_code(): void
+    /**
+     * @return array<array<string>>
+     */
+    public static function correctCurrencies(): array
     {
-        $currencyCode = 'EUR';
+        return [
+            ['USD'],
+            ['EUR'],
+        ];
+    }
+
+    /**
+     * @dataProvider correctCurrencies
+     */
+    public function test_correct_code(string $currencyCode): void
+    {
         $this->assertSame($currencyCode, Currency::createWith($currencyCode)->toString());
     }
-    // @TODO test currencies we can use (EUR, USD); use a data provider
-    // @TODO test currencies we can't use (???)
+
+    public function test_invalid_code(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        Currency::createWith('BTC');
+    }
     // @TODO add a function for "if ledger currency"
     // @TODO currency conversion using exchange rate
 }
