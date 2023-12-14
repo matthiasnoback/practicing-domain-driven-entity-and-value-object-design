@@ -16,4 +16,9 @@ final class Money
     {
         return $this->amount;
     }
+
+    public function percentDiscountAmount(float $percentage): self
+    {
+        return new self(round($this->amount * ($percentage / 100), 2));
+    }
 }
