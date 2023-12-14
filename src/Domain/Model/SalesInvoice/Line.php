@@ -67,6 +67,8 @@ final class Line
     ) {
         Assertion::inArray($vatCode, ['S', 'L']);
 
+        // @TODO discount should be positive or 0.0 or null, and should be a VO
+
         $this->productId = $productId;
         $this->description = $description;
         $this->quantity = $quantity;
@@ -80,6 +82,7 @@ final class Line
 
     public function amount(): Money
     {
+        // @TODO remove the rounding
         return new Money(round(round($this->quantity, $this->quantityPrecision) * $this->tariff, 2));
     }
 
@@ -89,12 +92,13 @@ final class Line
             return 0.0;
         }
 
+        // @TODO use Money and return Money
         return $this->amount()->takePercentage($this->discount)->toFloat();
     }
 
-    public function netAmount(): float
+    public function netAmount(): Money
     {
-        return round($this->amount()->toFloat() - $this->discountAmount(), 2);
+        return $this->amount()->subtract(Money::fromFloat($this->discountAmount()));
     }
 
     public function vatAmount(): float
@@ -111,6 +115,6 @@ final class Line
             throw new InvalidArgumentException('Should not happen');
         }
 
-        return round($this->netAmount() * $vatRate / 100, 2);
+        return round($this->netAmount()->toFloat() * $vatRate / 100, 2);
     }
 }
