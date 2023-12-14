@@ -89,7 +89,7 @@ final class Line
             return 0.0;
         }
 
-        return $this->amount()->percentDiscountAmount($this->discount)->toFloat();
+        return $this->amount()->takePercentage($this->discount)->toFloat();
     }
 
     public function netAmount(): float
