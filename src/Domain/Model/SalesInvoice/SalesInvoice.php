@@ -92,6 +92,16 @@ final class SalesInvoice
         ?float $discount,
         string $vatCode
     ): void {
+        // this is a command method (including setters, and action-oriented methods)
+        // some other methods are query methods (including getters)
+
+        if ($this->isFinalized) {
+            throw new \RuntimeException('You cannot add a line to an already finalized invoice');
+        }
+        if ($this->isCancelled) {
+            throw new \RuntimeException('You cannot add a line to an already cancelled invoice');
+        }
+
         $newLine = new Line(
             $productId,
             $description,
@@ -154,9 +164,12 @@ final class SalesInvoice
         return round($this->totalVatAmount() / $this->exchangeRate, 2);
     }
 
-    public function setFinalized(bool $finalized): void
+    public function finalize(): void
     {
-        $this->isFinalized = $finalized;
+        if ($this->isCancelled) {
+            throw new \RuntimeException('cancelled');
+        }
+        $this->isFinalized = true;
     }
 
     public function isFinalized(): bool
@@ -164,28 +177,16 @@ final class SalesInvoice
         return $this->isFinalized;
     }
 
-    public function setCancelled(bool $cancelled): void
+    public function cancel(): void
     {
-        $this->isCancelled = $cancelled;
+        if ($this->isFinalized) {
+            throw new \RuntimeException('finalized');
+        }
+        $this->isCancelled = true;
     }
 
     public function isCancelled(): bool
     {
         return $this->isCancelled;
-    }
-
-    public function getQuantityPrecision(): int
-    {
-        return $this->quantityPrecision;
-    }
-
-    public function getExchangeRate(): ?float
-    {
-        return $this->exchangeRate;
-    }
-
-    public function getCurrency(): Currency
-    {
-        return $this->currency;
     }
 }

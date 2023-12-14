@@ -121,9 +121,46 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isFinalized());
 
-        $salesInvoice->setFinalized(true);
+        $salesInvoice->finalize();
 
         self::assertTrue($salesInvoice->isFinalized());
+    }
+
+    public function test_you_cannot_add_a_line_to_a_finalized_invoice(): void
+    {
+        $finalizedInvoice = $this->aFinalizedInvoice();
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('finalized');
+
+        $this->addLine($finalizedInvoice);
+    }
+
+    public function test_you_cannot_add_a_line_to_a_cancelled_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->cancel();
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $this->addLine($salesInvoice);
+    }
+
+    public function test_you_cannot_cancel_a_finalized_invoice(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('finalized');
+
+        $this->aFinalizedInvoice()->cancel();
+    }
+
+    public function test_you_cannot_finalize_a_cancelled_invoice(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $this->cancelledInvoice()->finalize();
     }
 
     /**
@@ -134,7 +171,7 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isCancelled());
 
-        $salesInvoice->setCancelled(true);
+        $salesInvoice->cancel();
 
         self::assertTrue($salesInvoice->isCancelled());
     }
@@ -160,14 +197,7 @@ final class SalesInvoiceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Quantity');
 
-        $salesInvoice->addLine(
-            $this->aProductId(),
-            $this->aDescription(),
-            $quantity,
-            $this->aTariff(),
-            null,
-            $this->aVatCode()
-        );
+        $this->addLine($salesInvoice, $quantity);
     }
 
     public function test_we_can_add_a_product_only_once(): void
@@ -242,5 +272,33 @@ final class SalesInvoiceTest extends TestCase
     private function aVatCode(): string
     {
         return 'S';
+    }
+
+    private function aFinalizedInvoice(): SalesInvoice
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+
+        return $salesInvoice;
+    }
+
+    private function cancelledInvoice(): SalesInvoice
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->cancel();
+
+        return $salesInvoice;
+    }
+
+    public function addLine(SalesInvoice $salesInvoice, ?float $quantity = null): void
+    {
+        $salesInvoice->addLine(
+            $this->aProductId(),
+            $this->aDescription(),
+            $quantity ?? $this->aQuantity(),
+            $this->aTariff(),
+            null,
+            $this->aVatCode()
+        );
     }
 }
