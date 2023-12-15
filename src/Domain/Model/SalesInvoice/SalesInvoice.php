@@ -111,8 +111,24 @@ final class SalesInvoice
     }
 
     public function addLine(
-        Line $line
+        int $productId,
+        string $description,
+        float $quantity,
+        float $tariff,
+        ?float $discount,
+        string $vatCode
     ): void {
+        $line = new Line(
+            $productId,
+            $description,
+            $quantity,
+            $this->quantityPrecision,
+            $tariff,
+            $this->currency->toString(),
+            $discount,
+            $vatCode,
+            $this->exchangeRate
+        );
         $this->lines[] = $line;
     }
 
