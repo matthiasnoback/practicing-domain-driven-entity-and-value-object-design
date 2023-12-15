@@ -13,7 +13,7 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
-        $salesInvoice = new SalesInvoice();
+        $salesInvoice = SalesInvoice::createDraft();
         $salesInvoice->setCustomerId(1001);
         $salesInvoice->setInvoiceDate(new DateTimeImmutable());
         $salesInvoice->setCurrency('USD');
@@ -168,7 +168,7 @@ final class SalesInvoiceTest extends TestCase
      */
     private function createSalesInvoice(): SalesInvoice
     {
-        $salesInvoice = new SalesInvoice();
+        $salesInvoice = SalesInvoice::createDraft();
         $salesInvoice->setCustomerId(1001);
         $salesInvoice->setInvoiceDate(new DateTimeImmutable());
         $salesInvoice->setCurrency('EUR');
