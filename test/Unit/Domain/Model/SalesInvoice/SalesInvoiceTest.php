@@ -13,12 +13,13 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
-        $salesInvoice = SalesInvoice::createDraft();
-        $salesInvoice->setCustomerId(1001);
-        $salesInvoice->setInvoiceDate(new DateTimeImmutable());
-        $salesInvoice->setCurrency('USD');
-        $salesInvoice->setExchangeRate(1.3);
-        $salesInvoice->setQuantityPrecision(3);
+        $salesInvoice = SalesInvoice::createDraft(
+            1001,
+            new DateTimeImmutable(),
+            Currency::createWith('USD'),
+            1.3,
+            3
+        );
 
         $salesInvoice->addLine(
             new Line(
@@ -163,18 +164,36 @@ final class SalesInvoiceTest extends TestCase
         self::assertTrue($salesInvoice->isCancelled());
     }
 
+    public function test_exchange_rate_is_mandatory_when_currency_is_not_the_ledger_currency(): void
+    {
+        // ExchangeRate: has two currencies, they could be the same EUR-EUR, EUR-USD
+        // Conversion
+        // Currency: has an exchange rate
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('exchange rate');
+
+        SalesInvoice::createDraft(
+            1001,
+            new DateTimeImmutable(),
+            Currency::createWith('USD'),
+            null,
+            3
+        );
+    }
+
     /**
      * @return SalesInvoice
      */
     private function createSalesInvoice(): SalesInvoice
     {
-        $salesInvoice = SalesInvoice::createDraft();
-        $salesInvoice->setCustomerId(1001);
-        $salesInvoice->setInvoiceDate(new DateTimeImmutable());
-        $salesInvoice->setCurrency('EUR');
-        $salesInvoice->setQuantityPrecision(3);
-
-        return $salesInvoice;
+        return SalesInvoice::createDraft(
+            1001,
+            new DateTimeImmutable(),
+            Currency::createWith('EUR'),
+            null,
+            3
+        );
     }
 
     private function aDescription(): string

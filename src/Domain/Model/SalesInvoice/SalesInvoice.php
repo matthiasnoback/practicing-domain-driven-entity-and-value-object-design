@@ -45,13 +45,44 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    private function __construct()
+    private function __construct(
+        int $customerId, // @TODO upgrade to VO
+        DateTimeImmutable $invoiceDate,
+        Currency $currency,
+        ?float $exchangeRate,
+        int $quantityPrecision,
+    )
     {
+        // @TODO add validation
+
+        if (! $currency->isLedgerCurrency()) {
+            if ($exchangeRate === null) {
+                throw new \InvalidArgumentException('Provide an exchange rate');
+            }
+        }
+
+        // @TODO customer should exist
+        $this->setCustomerId($customerId);
+
+        // @TODO date => book period should be open
+        $this->setInvoiceDate($invoiceDate);
+        $this->setCurrency($currency);
+        // @TODO greater than or equal to 0
+        $this->setQuantityPrecision($quantityPrecision);
+        $this->setExchangeRate($exchangeRate);
     }
 
-    public static function createDraft(): self
+    public static function createDraft(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        Currency $currency,
+        ?float $exchangeRate,
+        int $quantityPrecision,
+    ): self
     {
-        return new self();
+        // @TODO manage invariants
+
+        return new self($customerId, $invoiceDate, $currency, $exchangeRate, $quantityPrecision);
     }
 
     public function setCustomerId(int $customerId): void
@@ -64,9 +95,9 @@ final class SalesInvoice
         $this->invoiceDate = $invoiceDate;
     }
 
-    public function setCurrency(string $currency): void
+    public function setCurrency(Currency $currency): void
     {
-        $this->currency = Currency::createWith($currency);
+        $this->currency = $currency;
     }
 
     public function setExchangeRate(?float $exchangeRate): void
