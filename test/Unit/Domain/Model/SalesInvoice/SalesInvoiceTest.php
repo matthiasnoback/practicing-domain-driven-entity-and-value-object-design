@@ -121,7 +121,7 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isFinalized());
 
-        $salesInvoice->setFinalized(true);
+        $salesInvoice->finalize();
 
         self::assertTrue($salesInvoice->isFinalized());
     }
@@ -134,9 +134,30 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isCancelled());
 
-        $salesInvoice->setCancelled(true);
+        $salesInvoice->cancel();
 
         self::assertTrue($salesInvoice->isCancelled());
+    }
+
+    public function test_you_cannot_cancel_an_invoice_when_it_is_finalized(): void
+    {
+        $salesInvoice = $this->aFinalizedInvoice();
+
+        $this->expectException(\LogicException::class);
+
+        $salesInvoice->cancel();
+    }
+
+    public function test_you_cannot_add_a_line_to_a_finalized_invoice(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->addLine($this->aFinalizedInvoice());
+    }
+
+    public function test_you_cannot_add_a_line_to_a_cancelled_invoice(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->addLine($this->aCancelledInvoice());
     }
 
     public function test_exchange_rate_is_mandatory_when_currency_is_not_the_ledger_currency(): void
@@ -179,6 +200,16 @@ final class SalesInvoiceTest extends TestCase
         $this->expectExceptionMessage('Product');
 
         $this->addLine($salesInvoice, $sameProduct);
+    }
+
+    public function test_cannot_finalize_a_cancelled_invoice(): void
+    {
+        $cancelledInvoice = $this->createSalesInvoice();
+        $cancelledInvoice->cancel();
+
+        $this->expectException(\LogicException::class);
+
+        $cancelledInvoice->finalize();
     }
 
     /**
@@ -235,5 +266,23 @@ final class SalesInvoiceTest extends TestCase
             null,
             $this->aVatCode()
         );
+    }
+
+    /**
+     * @return SalesInvoice
+     */
+    public function aFinalizedInvoice(): SalesInvoice
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+        return $salesInvoice;
+    }
+
+    private function aCancelledInvoice(): SalesInvoice
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->cancel();
+
+        return $salesInvoice;
     }
 }

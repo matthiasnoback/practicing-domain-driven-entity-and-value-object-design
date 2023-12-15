@@ -62,14 +62,14 @@ final class SalesInvoice
         }
 
         // @TODO customer should exist
-        $this->setCustomerId($customerId);
+        $this->customerId = $customerId;
 
         // @TODO date => book period should be open
-        $this->setInvoiceDate($invoiceDate);
-        $this->setCurrency($currency);
+        $this->invoiceDate = $invoiceDate;
+        $this->currency = $currency;
         // @TODO greater than or equal to 0
-        $this->setQuantityPrecision($quantityPrecision);
-        $this->setExchangeRate($exchangeRate);
+        $this->quantityPrecision = $quantityPrecision;
+        $this->exchangeRate = $exchangeRate;
     }
 
     public static function createDraft(
@@ -85,31 +85,6 @@ final class SalesInvoice
         return new self($customerId, $invoiceDate, $currency, $exchangeRate, $quantityPrecision);
     }
 
-    public function setCustomerId(int $customerId): void
-    {
-        $this->customerId = $customerId;
-    }
-
-    public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
-    {
-        $this->invoiceDate = $invoiceDate;
-    }
-
-    public function setCurrency(Currency $currency): void
-    {
-        $this->currency = $currency;
-    }
-
-    public function setExchangeRate(?float $exchangeRate): void
-    {
-        $this->exchangeRate = $exchangeRate;
-    }
-
-    public function setQuantityPrecision(int $quantityPrecision): void
-    {
-        $this->quantityPrecision = $quantityPrecision;
-    }
-
     public function addLine(
         int $productId,
         string $description,
@@ -118,6 +93,12 @@ final class SalesInvoice
         ?float $discount,
         string $vatCode
     ): void {
+        if ($this->isCancelled) {
+            throw new \LogicException('Invalid state');
+        }
+        if ($this->isFinalized) {
+            throw new \LogicException('Invalid state');
+        }
         foreach ($this->lines as $line) {
             if ($line->productId() === $productId) {
                 throw new \InvalidArgumentException('Product already added');
@@ -178,9 +159,13 @@ final class SalesInvoice
         return round($this->totalVatAmount() / $this->exchangeRate, 2);
     }
 
-    public function setFinalized(bool $finalized): void
+    public function finalize(): void
     {
-        $this->isFinalized = $finalized;
+        if ($this->isCancelled) {
+            throw new \LogicException('Invalid state');
+        }
+
+        $this->isFinalized = true;
     }
 
     public function isFinalized(): bool
@@ -188,9 +173,12 @@ final class SalesInvoice
         return $this->isFinalized;
     }
 
-    public function setCancelled(bool $cancelled): void
+    public function cancel(): void
     {
-        $this->isCancelled = $cancelled;
+        if ($this->isFinalized) {
+            throw new \LogicException('Invalid state');
+        }
+        $this->isCancelled = true;
     }
 
     public function isCancelled(): bool
