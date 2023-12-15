@@ -83,22 +83,24 @@ final class Line
     public function amount(): Money
     {
         // @TODO remove the rounding
-        return new Money(round(round($this->quantity, $this->quantityPrecision) * $this->tariff, 2));
+        return new Money(
+            round($this->quantity, $this->quantityPrecision) * $this->tariff,
+            Currency::createWith($this->currency)
+        );
     }
 
-    public function discountAmount(): float
+    public function discountAmount(): Money
     {
         if ($this->discount === null) {
-            return 0.0;
+            return Money::fromFloat(0.0, Currency::createWith($this->currency));
         }
 
-        // @TODO use Money and return Money
-        return $this->amount()->takePercentage($this->discount)->toFloat();
+        return $this->amount()->takePercentage($this->discount);
     }
 
     public function netAmount(): Money
     {
-        return $this->amount()->subtract(Money::fromFloat($this->discountAmount()));
+        return $this->amount()->subtract($this->discountAmount());
     }
 
     public function vatAmount(): float

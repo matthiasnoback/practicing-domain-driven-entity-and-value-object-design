@@ -7,15 +7,18 @@ final class Money
 {
     private float $amount;
 
-    public function __construct(float $amount)
+    private Currency $currency;
+
+    public function __construct(float $amount, Currency $currency)
     {
         // @TODO enforce Currency to be provided
         $this->amount = round($amount, 2);
+        $this->currency = $currency;
     }
 
-    public static function fromFloat(float $amount): self
+    public static function fromFloat(float $amount, Currency $currency): self
     {
-        return new self($amount);
+        return new self($amount, $currency);
     }
 
     public function toFloat(): float
@@ -25,12 +28,16 @@ final class Money
 
     public function takePercentage(float $percentage): self
     {
-        return new self(round($this->amount * ($percentage / 100), 2));
+        return new self(
+            round($this->amount * ($percentage / 100), 2),
+            $this->currency
+        );
     }
 
     public function subtract(Money $other): self
     {
-        return new self($this->amount - $other->amount);
+        // @TODO enforce currency of $other to be the same as $this->>currency
+        return new self($this->amount - $other->amount, $this->currency);
     }
 
     public function equals(Money $other): bool
