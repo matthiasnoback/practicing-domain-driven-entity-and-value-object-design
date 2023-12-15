@@ -67,6 +67,8 @@ final class Line
     ) {
         Assertion::inArray($vatCode, ['S', 'L']);
 
+        Assertion::greaterThan($quantity, 0.0, 'The quantity should be larger than 0.0');
+
         // @TODO discount should be positive or 0.0 or null, and should be a VO
 
         $this->productId = $productId;
@@ -118,5 +120,10 @@ final class Line
         }
 
         return round($this->netAmount()->toFloat() * $vatRate / 100, 2);
+    }
+
+    public function productId(): int
+    {
+        return $this->productId;
     }
 }

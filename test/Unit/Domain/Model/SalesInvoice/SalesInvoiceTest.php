@@ -157,6 +157,30 @@ final class SalesInvoiceTest extends TestCase
         );
     }
 
+    public function test_line_quantity_should_be_more_than_0(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('quantity');
+
+        $this->addLine($salesInvoice, null, 0.0);
+    }
+
+    public function test_same_product_cannot_be_added_twice_to_an_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+
+        $sameProduct = $this->aProductId();
+
+        $this->addLine($salesInvoice, $sameProduct);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Product');
+
+        $this->addLine($salesInvoice, $sameProduct);
+    }
+
     /**
      * @return SalesInvoice
      */
@@ -194,5 +218,22 @@ final class SalesInvoiceTest extends TestCase
     private function anotherProductId(): int
     {
         return 2;
+    }
+
+    private function aVatCode(): string
+    {
+        return 'S';
+    }
+
+    public function addLine(SalesInvoice $salesInvoice, ?int $productId = null, ?float $quantity = null): void
+    {
+        $salesInvoice->addLine(
+            $productId ?? $this->aProductId(),
+            $this->aDescription(),
+            $quantity ?? $this->aQuantity(),
+            $this->aTariff(),
+            null,
+            $this->aVatCode()
+        );
     }
 }

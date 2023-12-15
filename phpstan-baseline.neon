@@ -11,11 +11,6 @@ parameters:
 			path: src/Domain/Model/SalesInvoice/Line.php
 
 		-
-			message: "#^Property Domain\\\\Model\\\\SalesInvoice\\\\Line\\:\\:\\$productId is never read, only written\\.$#"
-			count: 1
-			path: src/Domain/Model/SalesInvoice/Line.php
-
-		-
 			message: "#^Property Domain\\\\Model\\\\SalesInvoice\\\\SalesInvoice\\:\\:\\$customerId is never read, only written\\.$#"
 			count: 1
 			path: src/Domain/Model/SalesInvoice/SalesInvoice.php
