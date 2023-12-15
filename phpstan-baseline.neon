@@ -19,3 +19,8 @@ parameters:
 			message: "#^Property Domain\\\\Model\\\\SalesInvoice\\\\SalesInvoice\\:\\:\\$invoiceDate is never read, only written\\.$#"
 			count: 1
 			path: src/Domain/Model/SalesInvoice/SalesInvoice.php
+
+		-
+			message: "#^Property Domain\\\\Model\\\\SalesInvoice\\\\SalesInvoice\\:\\:\\$salesInvoiceId is never read, only written\\.$#"
+			count: 1
+			path: src/Domain/Model/SalesInvoice/SalesInvoice.php

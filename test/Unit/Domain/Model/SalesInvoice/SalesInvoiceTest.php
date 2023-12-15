@@ -14,6 +14,7 @@ final class SalesInvoiceTest extends TestCase
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
         $salesInvoice = SalesInvoice::createDraft(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             Currency::createWith('USD'),
@@ -169,7 +170,10 @@ final class SalesInvoiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('exchange rate');
 
+        // @TODO hide the UUID part from the constructor
+        // @TODO remove duplication
         SalesInvoice::createDraft(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             Currency::createWith('USD'),
@@ -218,6 +222,7 @@ final class SalesInvoiceTest extends TestCase
     private function createSalesInvoice(): SalesInvoice
     {
         return SalesInvoice::createDraft(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             Currency::createWith('EUR'),
@@ -284,5 +289,15 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice->cancel();
 
         return $salesInvoice;
+    }
+
+    /**
+     * @return SalesInvoiceId
+     */
+    public function aSalesInvoiceId(): SalesInvoiceId
+    {
+        return SalesInvoiceId::fromUuid(
+            'f0b8eff6-d6f5-4fca-b976-6ea061cb32b7'
+        );
     }
 }

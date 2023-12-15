@@ -8,6 +8,8 @@ use DateTimeImmutable;
 
 final class SalesInvoice
 {
+    private SalesInvoiceId $salesInvoiceId;
+
     /**
      * @var int
      */
@@ -39,13 +41,13 @@ final class SalesInvoice
      * @var bool
      */
     private $isCancelled = false;
-
     /**
      * @var DateTimeImmutable
      */
     private $invoiceDate;
 
     private function __construct(
+        SalesInvoiceId $salesInvoiceId,
         int $customerId, // @TODO upgrade to VO
         DateTimeImmutable $invoiceDate,
         Currency $currency,
@@ -70,9 +72,11 @@ final class SalesInvoice
         // @TODO greater than or equal to 0
         $this->quantityPrecision = $quantityPrecision;
         $this->exchangeRate = $exchangeRate;
+        $this->salesInvoiceId = $salesInvoiceId;
     }
 
     public static function createDraft(
+        SalesInvoiceId $salesInvoiceId,
         int $customerId,
         DateTimeImmutable $invoiceDate,
         Currency $currency,
@@ -82,7 +86,7 @@ final class SalesInvoice
     {
         // @TODO manage invariants
 
-        return new self($customerId, $invoiceDate, $currency, $exchangeRate, $quantityPrecision);
+        return new self($salesInvoiceId, $customerId, $invoiceDate, $currency, $exchangeRate, $quantityPrecision);
     }
 
     public function addLine(
