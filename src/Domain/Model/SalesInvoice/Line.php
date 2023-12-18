@@ -75,23 +75,22 @@ final class Line
         $this->exchangeRate = $exchangeRate;
     }
 
-    public function amount(): float
+    public function amount(): Money
     {
-        return round(round($this->quantity, $this->quantityPrecision) * $this->tariff, 2);
+        return new Money(
+            round($this->quantity, $this->quantityPrecision) * $this->tariff,
+            $this->currency
+        );
     }
 
-    public function discountAmount(): float
+    public function discountAmount(): Money
     {
-        if ($this->discount === null) {
-            return 0.0;
-        }
-
-        return round($this->amount() * $this->discount / 100, 2);
+        return $this->amount()->discount($this->discount);
     }
 
-    public function netAmount(): float
+    public function netAmount(): Money
     {
-        return round($this->amount() - $this->discountAmount(), 2);
+        return $this->amount()->subtract($this->discountAmount());
     }
 
     public function vatAmount(): float
@@ -108,6 +107,6 @@ final class Line
             throw new InvalidArgumentException('Should not happen');
         }
 
-        return round($this->netAmount() * $vatRate / 100, 2);
+        return round($this->netAmount()->amount() * $vatRate / 100, 2);
     }
 }

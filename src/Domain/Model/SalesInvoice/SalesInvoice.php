@@ -85,7 +85,7 @@ final class SalesInvoice
         $sum = 0.0;
 
         foreach ($this->lines as $line) {
-            $sum += $line->netAmount();
+            $sum += $line->netAmount()->amount();
         }
 
         return round($sum, 2);
