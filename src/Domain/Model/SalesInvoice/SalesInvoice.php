@@ -93,10 +93,7 @@ final class SalesInvoice
 
     public function totalNetAmountInLedgerCurrency(): float
     {
-        // option 1: add a test function to Currency: isEuroCurrency()
-        // option 2: same, but: isLedgerCurrency()
-        // option 3: same, but: equals(Currency $other)
-        if ($this->currency->equals(new Currency('EUR')) || $this->exchangeRate == null) {
+        if ($this->currency->isLedgerCurrency() || $this->exchangeRate == null) {
             return $this->totalNetAmount();
         }
 
@@ -116,7 +113,7 @@ final class SalesInvoice
 
     public function totalVatAmountInLedgerCurrency(): float
     {
-        if ($this->currency->equals(new Currency('EUR')) || $this->exchangeRate == null) {
+        if ($this->currency->isLedgerCurrency() || $this->exchangeRate == null) {
             return $this->totalVatAmount();
         }
 

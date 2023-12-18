@@ -25,4 +25,14 @@ final class Currency
     {
         return $other->currency === $this->currency;
     }
+
+    public function isLedgerCurrency(): bool
+    {
+        return $this->equals(new self('EUR'));
+    }
+
+    public static function EUR(): self
+    {
+        return new self('EUR');
+    }
 }
