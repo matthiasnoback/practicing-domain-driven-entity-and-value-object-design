@@ -13,10 +13,7 @@ final class SalesInvoice
      */
     private $customerId;
 
-    /**
-     * @var string
-     */
-    private $currency;
+    private Currency $currency;
 
     /**
      * @var float|null
@@ -64,7 +61,7 @@ final class SalesInvoice
 
     public function setCurrency(string $currency): void
     {
-        $this->currency = $currency;
+        $this->currency = new Currency($currency);
     }
 
     public function setExchangeRate(?float $exchangeRate): void
@@ -96,7 +93,10 @@ final class SalesInvoice
 
     public function totalNetAmountInLedgerCurrency(): float
     {
-        if ($this->currency === 'EUR' || $this->exchangeRate == null) {
+        // option 1: add a test function to Currency: isEuroCurrency()
+        // option 2: same, but: isLedgerCurrency()
+        // option 3: same, but: equals(Currency $other)
+        if ($this->currency->equals(new Currency('EUR')) || $this->exchangeRate == null) {
             return $this->totalNetAmount();
         }
 
@@ -116,7 +116,7 @@ final class SalesInvoice
 
     public function totalVatAmountInLedgerCurrency(): float
     {
-        if ($this->currency === 'EUR' || $this->exchangeRate == null) {
+        if ($this->currency->equals(new Currency('EUR')) || $this->exchangeRate == null) {
             return $this->totalVatAmount();
         }
 
@@ -153,8 +153,9 @@ final class SalesInvoice
         return $this->exchangeRate;
     }
 
-    public function getCurrency(): string
+    public function getCurrency(): Currency
     {
         return $this->currency;
     }
 }
+// @TODO get rid of toString calls

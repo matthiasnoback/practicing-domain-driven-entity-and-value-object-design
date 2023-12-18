@@ -34,10 +34,7 @@ final class Line
      */
     private $tariff;
 
-    /**
-     * @var string
-     */
-    private $currency;
+    private Currency $currency;
 
     /**
      * @var float|null
@@ -60,7 +57,7 @@ final class Line
         float $quantity,
         int $quantityPrecision,
         float $tariff,
-        string $currency,
+        Currency $currency,
         ?float $discount,
         string $vatCode,
         ?float $exchangeRate
