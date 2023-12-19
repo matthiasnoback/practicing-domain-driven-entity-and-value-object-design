@@ -16,7 +16,7 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = SalesInvoice::create(
             1001,
             new DateTimeImmutable(),
-            'USD',
+            new Currency('USD'),
             1.3,
             3
         );
@@ -164,6 +164,45 @@ final class SalesInvoiceTest extends TestCase
         self::assertTrue($salesInvoice->isCancelled());
     }
 
+    public function test_exchange_rate_should_be_more_than_0(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        SalesInvoice::create(
+            1001,
+            new DateTimeImmutable(),
+            new Currency('USD'),
+            0.0,
+            3
+        );
+    }
+
+    public function test_exchange_rate_should_be_provided_when_currency_is_not_EUR(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        SalesInvoice::create(
+            1001,
+            new DateTimeImmutable(),
+            new Currency('USD'),
+            null,
+            3
+        );
+    }
+
+    public function test_exchange_rate_should_be_not_provided_when_currency_is_EUR(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        SalesInvoice::create(
+            1001,
+            new DateTimeImmutable(),
+            new Currency('EUR'),
+            0.8,
+            3
+        );
+    }
+
     /**
      * @return SalesInvoice
      */
@@ -172,7 +211,7 @@ final class SalesInvoiceTest extends TestCase
         return SalesInvoice::create(
             1001,
             new DateTimeImmutable(),
-            'EUR',
+            new Currency('EUR'),
             null,
             3
         );

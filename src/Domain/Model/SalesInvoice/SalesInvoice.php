@@ -52,15 +52,21 @@ final class SalesInvoice
     public static function create(
         int $customerId,
         DateTimeImmutable $invoiceDate,
-        string $currency,
+        Currency $currency,
         ?float $exchangeRate,
         int $quantityPrecision,
     ): self {
+        if (! $currency->equals(new Currency('EUR'))) {
+            Assertion::greaterThan($exchangeRate, 0.0);
+        } else {
+            Assertion::null($exchangeRate);
+        }
+
         $object = new self();
 
         $object->customerId = $customerId;
         $object->invoiceDate = $invoiceDate;
-        $object->currency = new Currency($currency);
+        $object->currency = $currency;
         $object->exchangeRate = $exchangeRate;
         $object->quantityPrecision = $quantityPrecision;
 
