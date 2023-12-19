@@ -46,11 +46,14 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
+    private SalesInvoiceId $salesInvoiceId;
+
     private function __construct(/* still in use, no required args */)
     {
     }
 
     public static function create(
+        SalesInvoiceId $salesInvoiceId,
         int $customerId,
         DateTimeImmutable $invoiceDate,
         Currency $currency,
@@ -65,6 +68,7 @@ final class SalesInvoice
 
         $object = new self();
 
+        $object->salesInvoiceId = $salesInvoiceId;
         $object->customerId = $customerId;
         $object->invoiceDate = $invoiceDate;
         $object->currency = $currency;

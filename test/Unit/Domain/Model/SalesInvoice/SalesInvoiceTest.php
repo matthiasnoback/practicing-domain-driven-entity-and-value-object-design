@@ -14,6 +14,7 @@ final class SalesInvoiceTest extends TestCase
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
         $salesInvoice = SalesInvoice::create(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             new Currency('USD'),
@@ -164,6 +165,7 @@ final class SalesInvoiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         SalesInvoice::create(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             new Currency('USD'),
@@ -177,6 +179,7 @@ final class SalesInvoiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         SalesInvoice::create(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             new Currency('USD'),
@@ -190,6 +193,7 @@ final class SalesInvoiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         SalesInvoice::create(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             new Currency('EUR'),
@@ -231,6 +235,7 @@ final class SalesInvoiceTest extends TestCase
     private function createSalesInvoice(): SalesInvoice
     {
         return SalesInvoice::create(
+            $this->aSalesInvoiceId(),
             1001,
             new DateTimeImmutable(),
             new Currency('EUR'),
@@ -283,5 +288,10 @@ final class SalesInvoiceTest extends TestCase
             null,
             $this->aVatCode()
         );
+    }
+
+    public function aSalesInvoiceId(): SalesInvoiceId
+    {
+        return new SalesInvoiceId('e366422d-9454-4b5c-8970-06a541e19184');
     }
 }
