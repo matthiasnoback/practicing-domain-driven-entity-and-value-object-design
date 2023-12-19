@@ -82,6 +82,12 @@ final class SalesInvoice
         string $vatCode
     ): void
     {
+        foreach ($this->lines as $line) {
+            if ($line->productId() === $productId) {
+                throw new DuplicateProductException();
+            }
+        }
+
         $this->lines[] = new Line(
             $productId,
             $description,

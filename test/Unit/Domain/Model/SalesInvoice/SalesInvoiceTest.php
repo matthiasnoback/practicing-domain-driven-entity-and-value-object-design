@@ -178,6 +178,33 @@ final class SalesInvoiceTest extends TestCase
         );
     }
 
+    public function test_you_cannot_add_two_lines_for_the_same_product(): void
+    {
+        $this->expectException(DuplicateProductException::class);
+
+        $salesInvoice = $this->createSalesInvoice();
+
+        $sameProductId = $this->aProductId();
+
+        $salesInvoice->addLine(
+            $sameProductId,
+            $this->aDescription(),
+            $this->aQuantity(),
+            $this->aTariff(),
+            null,
+            $this->aVatCode()
+        );
+
+        $salesInvoice->addLine(
+            $sameProductId,
+            $this->aDescription(),
+            $this->aQuantity(),
+            $this->aTariff(),
+            null,
+            $this->aVatCode()
+        );
+    }
+
     /**
      * @return SalesInvoice
      */
@@ -215,5 +242,10 @@ final class SalesInvoiceTest extends TestCase
     private function anotherProductId(): int
     {
         return 2;
+    }
+
+    private function aVatCode(): string
+    {
+        return 'S';
     }
 }

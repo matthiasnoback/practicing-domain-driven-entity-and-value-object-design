@@ -109,4 +109,9 @@ final class Line
 
         return round($this->netAmount()->amount() * $vatRate / 100, 2);
     }
+
+    public function productId(): int
+    {
+        return $this->productId;
+    }
 }
