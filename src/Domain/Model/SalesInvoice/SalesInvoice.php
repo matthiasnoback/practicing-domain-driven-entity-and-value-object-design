@@ -45,33 +45,26 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    public function __construct()
+    private function __construct(/* still in use, no required args */)
     {
     }
 
-    public function setCustomerId(int $customerId): void
-    {
-        $this->customerId = $customerId;
-    }
+    public static function create(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        string $currency,
+        ?float $exchangeRate,
+        int $quantityPrecision,
+    ): self {
+        $object = new self();
 
-    public function setInvoiceDate(DateTimeImmutable $invoiceDate): void
-    {
-        $this->invoiceDate = $invoiceDate;
-    }
+        $object->customerId = $customerId;
+        $object->invoiceDate = $invoiceDate;
+        $object->currency = new Currency($currency);
+        $object->exchangeRate = $exchangeRate;
+        $object->quantityPrecision = $quantityPrecision;
 
-    public function setCurrency(string $currency): void
-    {
-        $this->currency = new Currency($currency);
-    }
-
-    public function setExchangeRate(?float $exchangeRate): void
-    {
-        $this->exchangeRate = $exchangeRate;
-    }
-
-    public function setQuantityPrecision(int $quantityPrecision): void
-    {
-        $this->quantityPrecision = $quantityPrecision;
+        return $object;
     }
 
     public function addLine(
