@@ -180,28 +180,28 @@ final class SalesInvoiceTest extends TestCase
 
     public function test_you_cannot_add_two_lines_for_the_same_product(): void
     {
-        $this->expectException(DuplicateProductException::class);
-
         $salesInvoice = $this->createSalesInvoice();
 
         $sameProductId = $this->aProductId();
 
-        $salesInvoice->addLine(
-            $sameProductId,
-            $this->aDescription(),
-            $this->aQuantity(),
-            $this->aTariff(),
-            null,
-            $this->aVatCode()
-        );
+        $this->addLine($salesInvoice, $sameProductId);
 
-        $salesInvoice->addLine(
-            $sameProductId,
-            $this->aDescription(),
-            $this->aQuantity(),
-            $this->aTariff(),
+        $this->expectException(DuplicateProductException::class);
+
+        $this->addLine($salesInvoice, $sameProductId);
+    }
+
+    public function test_quantity_should_be_more_than_0(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('quantity');
+
+        $this->addLine(
+            $salesInvoice,
             null,
-            $this->aVatCode()
+            0.0,
         );
     }
 
@@ -247,5 +247,21 @@ final class SalesInvoiceTest extends TestCase
     private function aVatCode(): string
     {
         return 'S';
+    }
+
+    public function addLine(
+        SalesInvoice $salesInvoice,
+        ?int         $productId = null,
+        ?float       $quantity = null,
+    ): void
+    {
+        $salesInvoice->addLine(
+            $productId ?? $this->aProductId(),
+            $this->aDescription(),
+            $quantity ?? $this->aQuantity(),
+            $this->aTariff(),
+            null,
+            $this->aVatCode()
+        );
     }
 }
