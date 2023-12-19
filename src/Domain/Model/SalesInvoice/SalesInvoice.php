@@ -82,15 +82,11 @@ final class SalesInvoice
         string $vatCode
     ): void
     {
-        Assertion::greaterThan($quantity, 0.0, 'The quantity should be greater than 0.0');
-
         foreach ($this->lines as $line) {
             if ($line->productId() === $productId) {
                 throw new DuplicateProductException();
             }
         }
-
-        // quantity should be > 0
 
         $this->lines[] = new Line(
             $productId,

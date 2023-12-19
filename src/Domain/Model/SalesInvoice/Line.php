@@ -7,6 +7,9 @@ use Assert\Assertion;
 use DateTime;
 use InvalidArgumentException;
 
+/**
+ * @private to SalesInvoice
+ */
 final class Line
 {
     /**
@@ -63,6 +66,7 @@ final class Line
         ?float $exchangeRate
     ) {
         Assertion::inArray($vatCode, ['S', 'L']);
+        Assertion::greaterThan($quantity, 0.0, 'The quantity should be greater than 0.0');
 
         $this->productId = $productId;
         $this->description = $description;
