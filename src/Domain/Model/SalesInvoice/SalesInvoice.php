@@ -154,20 +154,5 @@ final class SalesInvoice
     {
         return $this->isCancelled;
     }
-
-    public function getQuantityPrecision(): int
-    {
-        return $this->quantityPrecision;
-    }
-
-    public function getExchangeRate(): ?float
-    {
-        return $this->exchangeRate;
-    }
-
-    public function getCurrency(): Currency
-    {
-        return $this->currency;
-    }
 }
 // @TODO get rid of toString calls
