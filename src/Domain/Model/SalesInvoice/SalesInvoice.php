@@ -5,6 +5,7 @@ namespace Domain\Model\SalesInvoice;
 
 use Assert\Assertion;
 use DateTimeImmutable;
+use http\Exception\InvalidArgumentException;
 
 final class SalesInvoice
 {
@@ -82,6 +83,10 @@ final class SalesInvoice
         string $vatCode
     ): void
     {
+        if ($this->isFinalized) {
+            throw new InvoiceAlreadyFinalized();
+        }
+
         foreach ($this->lines as $line) {
             if ($line->productId() === $productId) {
                 throw new DuplicateProductException();
@@ -141,9 +146,13 @@ final class SalesInvoice
         return round($this->totalVatAmount() / $this->exchangeRate, 2);
     }
 
-    public function setFinalized(bool $finalized): void
+    public function finalize(): void
     {
-        $this->isFinalized = $finalized;
+        if ($this->isFinalized) {
+            throw new InvoiceAlreadyFinalized();
+        }
+
+        $this->isFinalized = true;
     }
 
     public function isFinalized(): bool

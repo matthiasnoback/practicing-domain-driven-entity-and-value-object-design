@@ -121,9 +121,29 @@ final class SalesInvoiceTest extends TestCase
         $salesInvoice = $this->createSalesInvoice();
         self::assertFalse($salesInvoice->isFinalized());
 
-        $salesInvoice->setFinalized(true);
+        $salesInvoice->finalize();
 
         self::assertTrue($salesInvoice->isFinalized());
+    }
+
+    public function test_you_cannot_finalize_an_invoice_that_is_already_finalized(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+
+        $this->expectException(InvoiceAlreadyFinalized::class);
+
+        $salesInvoice->finalize();
+    }
+
+    public function test_you_cannot_add_a_line_to_an_invoice_that_is_already_finalized(): void
+    {
+        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice->finalize();
+
+        $this->expectException(InvoiceAlreadyFinalized::class);
+
+        $this->addLine($salesInvoice);
     }
 
     /**
