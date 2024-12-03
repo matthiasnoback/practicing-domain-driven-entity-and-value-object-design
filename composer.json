@@ -6,7 +6,7 @@
         }
     ],
     "require-dev": {
-        "symfony/var-dumper": "^5.1",
+        "symfony/var-dumper": "^6.4",
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-beberlei-assert": "^1.1",
         "phpstan/phpstan-phpunit": "^1.3",
