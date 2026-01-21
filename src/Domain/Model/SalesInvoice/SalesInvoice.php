@@ -13,15 +13,9 @@ final class SalesInvoice
      */
     private $customerId;
 
-    /**
-     * @var string
-     */
-    private $currency;
+    private Currency $currency;
 
-    /**
-     * @var float|null
-     */
-    private $exchangeRate;
+    private ?ExchangeRate $exchangeRate = null;
 
     /**
      * @var int
@@ -64,12 +58,17 @@ final class SalesInvoice
 
     public function setCurrency(string $currency): void
     {
-        $this->currency = $currency;
+        $this->currency = new Currency($currency);
     }
 
     public function setExchangeRate(?float $exchangeRate): void
     {
-        $this->exchangeRate = $exchangeRate;
+        if ($exchangeRate === null) {
+            $this->exchangeRate = null;
+            return;
+        }
+
+        $this->exchangeRate = new ExchangeRate($exchangeRate, new Currency('EUR'));
     }
 
     public function setQuantityPrecision(int $quantityPrecision): void
@@ -83,7 +82,7 @@ final class SalesInvoice
         $this->lines[] = $line;
     }
 
-    public function totalNetAmount(): float
+    public function totalNetAmount(): Money
     {
         $sum = 0.0;
 
@@ -91,19 +90,19 @@ final class SalesInvoice
             $sum += $line->netAmount();
         }
 
-        return round($sum, 2);
+        return new Money($sum, $this->currency);
     }
 
-    public function totalNetAmountInLedgerCurrency(): float
+    public function totalNetAmountInLedgerCurrency(): ?float
     {
-        if ($this->currency === 'EUR' || $this->exchangeRate == null) {
-            return $this->totalNetAmount();
+        if ((string)$this->currency === 'EUR' || $this->exchangeRate === null) {
+            return $this->totalNetAmount()->asFloat();
         }
 
-        return round($this->totalNetAmount() / $this->exchangeRate, 2);
+        return $this->exchangeRate->convert($this->totalNetAmount())->asFloat();
     }
 
-    public function totalVatAmount(): float
+    public function totalVatAmount(): Money
     {
         $sum = 0.0;
 
@@ -111,16 +110,16 @@ final class SalesInvoice
             $sum += $line->vatAmount();
         }
 
-        return round($sum, 2);
+        return new Money($sum, $this->currency);
     }
 
     public function totalVatAmountInLedgerCurrency(): float
     {
-        if ($this->currency === 'EUR' || $this->exchangeRate == null) {
-            return $this->totalVatAmount();
+        if ((string)$this->currency === 'EUR' || $this->exchangeRate === null) {
+            return $this->totalVatAmount()->asFloat();
         }
 
-        return round($this->totalVatAmount() / $this->exchangeRate, 2);
+        return $this->exchangeRate->convert($this->totalVatAmount())->asFloat();
     }
 
     public function setFinalized(bool $finalized): void
@@ -150,11 +149,15 @@ final class SalesInvoice
 
     public function getExchangeRate(): ?float
     {
-        return $this->exchangeRate;
+        if ($this->exchangeRate === null) {
+            return null;
+        }
+
+        return $this->exchangeRate->rateAsFloat();
     }
 
     public function getCurrency(): string
     {
-        return $this->currency;
+        return (string) $this->currency;
     }
 }

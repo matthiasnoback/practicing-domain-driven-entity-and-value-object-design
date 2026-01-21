@@ -1,6 +1,12 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Property Domain\\Model\\SalesInvoice\\ExchangeRate\:\:\$exchangeRate is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Domain/Model/SalesInvoice/ExchangeRate.php
+
+		-
 			message: '#^Property Domain\\Model\\SalesInvoice\\Line\:\:\$currency is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
