@@ -19,4 +19,9 @@ final class Currency
     {
         return $this->currency;
     }
+
+    public function equals(Currency $other): bool
+    {
+        return $this->currency === $other->currency;
+    }
 }

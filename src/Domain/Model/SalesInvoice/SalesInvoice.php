@@ -68,7 +68,7 @@ final class SalesInvoice
             return;
         }
 
-        $this->exchangeRate = new ExchangeRate($exchangeRate, new Currency('EUR'));
+        $this->exchangeRate = new ExchangeRate($exchangeRate, $this->currency, new Currency('EUR'));
     }
 
     public function setQuantityPrecision(int $quantityPrecision): void
@@ -93,13 +93,13 @@ final class SalesInvoice
         return new Money($sum, $this->currency);
     }
 
-    public function totalNetAmountInLedgerCurrency(): ?float
+    public function totalNetAmountInLedgerCurrency(): Money
     {
         if ((string)$this->currency === 'EUR' || $this->exchangeRate === null) {
-            return $this->totalNetAmount()->asFloat();
+            return $this->totalNetAmount();
         }
 
-        return $this->exchangeRate->convert($this->totalNetAmount())->asFloat();
+        return $this->exchangeRate->convert($this->totalNetAmount());
     }
 
     public function totalVatAmount(): Money
