@@ -20,7 +20,7 @@ final class SalesInvoice
     /**
      * @var int
      */
-    private $quantityPrecision;
+    private $quantityPrecision = 3;
 
     /**
      * @var Line[]
@@ -42,8 +42,28 @@ final class SalesInvoice
      */
     private $invoiceDate;
 
-    public function __construct()
+    private function __construct()
     {
+
+    }
+
+    public static function createDraft(
+        int $customerId,
+        DateTimeImmutable $invoiceDate,
+        string $currency = 'EUR',
+        ?float $exchangeRate = null,
+    ): self
+    {
+        $invoice = new self();
+        $invoice->setCustomerId($customerId);
+        $invoice->setInvoiceDate($invoiceDate);
+        $invoice->setCurrency($currency);
+        if ($currency !== 'EUR' && $exchangeRate === null) {
+            throw new \InvalidArgumentException('Exchange rate must be set');
+        }
+        $invoice->setExchangeRate($exchangeRate);
+
+        return $invoice;
     }
 
     public function setCustomerId(int $customerId): void
@@ -159,5 +179,10 @@ final class SalesInvoice
     public function getCurrency(): string
     {
         return (string) $this->currency;
+    }
+
+    public function getCustomerId(): int
+    {
+        return $this->customerId;
     }
 }

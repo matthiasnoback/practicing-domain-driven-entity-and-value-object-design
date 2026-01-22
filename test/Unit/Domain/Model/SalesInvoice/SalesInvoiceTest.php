@@ -8,17 +8,25 @@ use PHPUnit\Framework\TestCase;
 
 final class SalesInvoiceTest extends TestCase
 {
+    public function testCreateDraft(): void
+    {
+        $invoice = SalesInvoice::createDraft(1001, new DateTimeImmutable('2026-01-22'), 'USD', 1.3);
+        $this->assertEquals(1001, $invoice->getCustomerId());
+        // @TODO and so on
+    }
+
+    public function testNonEURCurrencyRequiresExchangeRate(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $invoice = SalesInvoice::createDraft(1001, new DateTimeImmutable('2026-01-22'), 'USD', null);
+    }
+
     /**
      * @test
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
-        $salesInvoice = new SalesInvoice();
-        $salesInvoice->setCustomerId(1001);
-        $salesInvoice->setInvoiceDate(new DateTimeImmutable());
-        $salesInvoice->setCurrency('USD');
-        $salesInvoice->setExchangeRate(1.3);
-        $salesInvoice->setQuantityPrecision(3);
+        $salesInvoice = SalesInvoice::createDraft(1001, new DateTimeImmutable(), 'USD', 1.3);
 
         $salesInvoice->addLine(
             new Line(
@@ -168,13 +176,7 @@ final class SalesInvoiceTest extends TestCase
      */
     private function createSalesInvoice(): SalesInvoice
     {
-        $salesInvoice = new SalesInvoice();
-        $salesInvoice->setCustomerId(1001);
-        $salesInvoice->setInvoiceDate(new DateTimeImmutable());
-        $salesInvoice->setCurrency('EUR');
-        $salesInvoice->setQuantityPrecision(3);
-
-        return $salesInvoice;
+        return SalesInvoice::createDraft(1001, new DateTimeImmutable());
     }
 
     private function aDescription(): string
