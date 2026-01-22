@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 final class SalesInvoiceTest extends TestCase
 {
+    private int $nextProductId = 1;
+
     public function testCreateDraft(): void
     {
         $invoice = SalesInvoice::createDraft(1001, new DateTimeImmutable('2026-01-22'), 'USD', 1.3);
@@ -18,31 +20,18 @@ final class SalesInvoiceTest extends TestCase
     public function testNonEURCurrencyRequiresExchangeRate(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $invoice = SalesInvoice::createDraft(1001, new DateTimeImmutable('2026-01-22'), 'USD', null);
+        $invoice = $this->createDraftInvoice(currency: 'USD');
     }
 
     public function testLineProductShouldBeUnique(): void
     {
-        $salesInvoice = SalesInvoice::createDraft(1001, new DateTimeImmutable(), 'USD', 1.3);
+        $salesInvoice = $this->createDraftInvoice();
+
+        $sameProductId = 1;
+        $this->addALine($salesInvoice, $sameProductId);
 
         $this->expectException(\InvalidArgumentException::class);
-        $sameProductId = 1;
-        $salesInvoice->addLine(
-            $sameProductId,
-            'Product with a 10% discount and standard VAT applied',
-            2.0,
-            15.0,
-            10.0,
-            'S'
-        );
-        $salesInvoice->addLine(
-            $sameProductId,
-            'Product with a 10% discount and standard VAT applied',
-            2.0,
-            15.0,
-            10.0,
-            'S'
-        );
+        $this->addALine($salesInvoice, $sameProductId);
     }
 
     /**
@@ -52,22 +41,8 @@ final class SalesInvoiceTest extends TestCase
     {
         $salesInvoice = SalesInvoice::createDraft(1001, new DateTimeImmutable(), 'USD', 1.3);
 
-        $salesInvoice->addLine(
-            1,
-            'Product with a 10% discount and standard VAT applied',
-            2.0,
-            15.0,
-            10.0,
-            'S'
-        );
-        $salesInvoice->addLine(
-            2,
-            'Product with no discount and low VAT applied',
-            3.123456,
-            12.50,
-            null,
-            'L'
-        );
+        $this->addALine($salesInvoice, productId: 1, quantity: 2.0, tariff: 15.0, discount: 10.0,vatCode: 'S');
+        $this->addALine($salesInvoice, productId: 2, quantity: 3.123456, tariff: 12.50, discount: null, vatCode: 'L');
 
         /*
          * 2 * 15.00 - 10% = 27.00
@@ -103,23 +78,14 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_ledger_currency(): void
     {
-        $salesInvoice = $this->createSalesInvoice();
-        $salesInvoice->addLine(
-            $this->aProductId(),
-            'Product with a 10% discount and standard VAT applied',
-            2.0,
-            15.0,
-            10.0,
-            'S'
-        );
-        $salesInvoice->addLine(
-            $this->anotherProductId(),
-            'Product with no discount and low VAT applied',
-            3.123456,
-            12.50,
-            null,
-            'L'
-        );
+        $salesInvoice = $this->createDraftInvoice();
+        $this->addALine($salesInvoice, quantity: 2.0,
+            tariff: 15.0,
+            discount: 10.0,
+            vatCode: 'S');
+        $this->addALine($salesInvoice, quantity: 3.123456,
+            tariff: 12.50,
+            vatCode: 'L');
 
         self::assertEquals($salesInvoice->totalNetAmount(), $salesInvoice->totalNetAmountInLedgerCurrency());
         self::assertEquals($salesInvoice->totalVatAmount()->asFloat(), $salesInvoice->totalVatAmountInLedgerCurrency());
@@ -130,7 +96,7 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_fails_when_you_provide_an_unknown_vat_code(): void
     {
-        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice = $this->createSalesInvoiceWithLines();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -149,12 +115,51 @@ final class SalesInvoiceTest extends TestCase
      */
     public function you_can_finalize_an_invoice(): void
     {
-        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice = $this->createSalesInvoiceWithLines();
         self::assertFalse($salesInvoice->isFinalized());
 
-        $salesInvoice->setFinalized(true);
+        $salesInvoice->finalize();
 
         self::assertTrue($salesInvoice->isFinalized());
+    }
+
+    public function testYouCannotFinalizeTwice(): void
+    {
+        $salesInvoice = $this->createSalesInvoiceWithLines();
+        $salesInvoice->finalize();
+
+        $this->expectException(FinalizeAgainException::class);
+        $salesInvoice->finalize();
+    }
+
+    public function testYouCannotAddALineToAFinalizeInvoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoiceWithLines();
+        $salesInvoice->finalize();
+
+        $this->expectException(InvalidChangeForLifecycleException::class);
+        $this->expectExceptionMessage('finalized');
+        $this->addALine($salesInvoice);
+    }
+
+
+    public function testYouCannotFinalizeAnInvoiceWithNoLines(): void
+    {
+        $salesInvoice = $this->createDraftInvoice();
+
+        $this->expectException(InvalidLifecycleChangeException::class);
+        $salesInvoice->finalize();
+    }
+
+    public function testYouCannotAddALineToACancelledInvoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoiceWithLines();
+        $salesInvoice->cancel();
+
+        $this->expectException(InvalidChangeForLifecycleException::class);
+        $this->expectExceptionMessage('cancelled');
+
+        $this->addALine($salesInvoice);
     }
 
     /**
@@ -162,20 +167,54 @@ final class SalesInvoiceTest extends TestCase
      */
     public function you_can_cancel_an_invoice(): void
     {
-        $salesInvoice = $this->createSalesInvoice();
+        $salesInvoice = $this->createSalesInvoiceWithLines();
         self::assertFalse($salesInvoice->isCancelled());
 
-        $salesInvoice->setCancelled(true);
+        $salesInvoice->cancel();
 
         self::assertTrue($salesInvoice->isCancelled());
+    }
+    /**
+     * @test
+     */
+    public function you_can_not_cancel_a_finalized_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoiceWithLines();
+
+        $salesInvoice->finalize();
+
+        $this->expectException(InvalidLifecycleChangeException::class);
+        $salesInvoice->cancel();
+    }
+
+    /**
+     * @test
+     */
+    public function you_can_not_finalize_a_cancelled_invoice(): void
+    {
+        $salesInvoice = $this->createSalesInvoiceWithLines();
+
+        $salesInvoice->cancel();
+
+        $this->expectException(InvalidLifecycleChangeException::class);
+        $salesInvoice->finalize();
     }
 
     /**
      * @return SalesInvoice
      */
-    private function createSalesInvoice(): SalesInvoice
+    private function createSalesInvoiceWithLines(): SalesInvoice
     {
-        return SalesInvoice::createDraft(1001, new DateTimeImmutable());
+        $salesInvoice = $this->createDraftInvoice();
+        $salesInvoice->addLine(
+            1,
+            $this->aDescription(),
+            $this->aQuantity(),
+            $this->aTariff(),
+            null,
+            'L',
+        );
+        return $salesInvoice;
     }
 
     private function aDescription(): string
@@ -195,11 +234,31 @@ final class SalesInvoiceTest extends TestCase
 
     private function aProductId(): int
     {
-        return 1;
+        $productId = $this->nextProductId;
+        $this->nextProductId++;
+        return $productId;
     }
 
-    private function anotherProductId(): int
+    private function createDraftInvoice(?string $currency = null, ?float $exchangeRate = null): SalesInvoice
     {
-        return 2;
+        return SalesInvoice::createDraft(1001, new DateTimeImmutable(), $currency ?? 'EUR', $exchangeRate);
+    }
+
+    public function addALine(SalesInvoice $salesInvoice,
+                             ?int $productId = null,
+                             ?float $quantity = null,
+                             ?float $tariff = null,
+                             ?float $discount = null,
+                             ?string $vatCode = null,
+    ): void
+    {
+        $salesInvoice->addLine(
+            $productId ?? $this->aProductId(),
+            'Product with a 10% discount and standard VAT applied',
+            $quantity ?? $this->aQuantity(),
+            $tariff ?? $this->aTariff(),
+            $discount,
+            $vatCode ?? 'S'
+        );
     }
 }

@@ -104,6 +104,12 @@ final class SalesInvoice
         ?float $discount,
         string $vatCode
     ): void {
+        if ($this->isFinalized) {
+            throw new InvalidChangeForLifecycleException('Invoice already finalized');
+        }
+        if ($this->isCancelled) {
+            throw new InvalidChangeForLifecycleException('Invoice already cancelled');
+        }
         foreach ($this->lines as $line) {
             if ($line->hasProductId($productId)) {
                 throw new \InvalidArgumentException('Product already added');
@@ -160,9 +166,19 @@ final class SalesInvoice
         return $this->exchangeRate->convert($this->totalVatAmount())->asFloat();
     }
 
-    public function setFinalized(bool $finalized): void
+    public function finalize(): void
     {
-        $this->isFinalized = $finalized;
+        if ($this->isFinalized) {
+            throw new FinalizeAgainException();
+        }
+        if ($this->isCancelled) {
+            throw new InvalidLifecycleChangeException('Invoice has been cancelled');
+        }
+        if (count($this->lines) === 0) {
+            throw new InvalidLifecycleChangeException('Invoice has no lines');
+        }
+
+        $this->isFinalized = true;
     }
 
     public function isFinalized(): bool
@@ -170,9 +186,12 @@ final class SalesInvoice
         return $this->isFinalized;
     }
 
-    public function setCancelled(bool $cancelled): void
+    public function cancel(): void
     {
-        $this->isCancelled = $cancelled;
+        if ($this->isFinalized) {
+            throw new InvalidLifecycleChangeException('Invoice has been finalized');
+        }
+        $this->isCancelled = true;
     }
 
     public function isCancelled(): bool
