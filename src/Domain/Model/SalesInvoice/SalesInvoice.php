@@ -8,6 +8,8 @@ use DateTimeImmutable;
 
 final class SalesInvoice
 {
+    private SalesInvoiceId $id;
+
     /**
      * @var int
      */
@@ -48,6 +50,7 @@ final class SalesInvoice
     }
 
     public static function createDraft(
+        SalesInvoiceId $id,
         int $customerId,
         DateTimeImmutable $invoiceDate,
         string $currency = 'EUR',
@@ -55,6 +58,7 @@ final class SalesInvoice
     ): self
     {
         $invoice = new self();
+        $invoice->id = $id;
         $invoice->setCustomerId($customerId);
         $invoice->setInvoiceDate($invoiceDate);
         $invoice->setCurrency($currency);

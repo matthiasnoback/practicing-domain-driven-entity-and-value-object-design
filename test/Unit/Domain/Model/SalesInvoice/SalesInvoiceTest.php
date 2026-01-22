@@ -9,10 +9,16 @@ use PHPUnit\Framework\TestCase;
 final class SalesInvoiceTest extends TestCase
 {
     private int $nextProductId = 1;
+    private SalesInvoiceRepository $salesInvoiceRepository;
+
+    protected function setUp(): void
+    {
+        $this->salesInvoiceRepository = new SalesInvoiceRepositoryForTesting();
+    }
 
     public function testCreateDraft(): void
     {
-        $invoice = SalesInvoice::createDraft(1001, new DateTimeImmutable('2026-01-22'), 'USD', 1.3);
+        $invoice = $this->createDraftInvoice();
         $this->assertEquals(1001, $invoice->getCustomerId());
         // @TODO and so on
     }
@@ -39,7 +45,7 @@ final class SalesInvoiceTest extends TestCase
      */
     public function it_calculates_the_correct_totals_for_an_invoice_in_foreign_currency(): void
     {
-        $salesInvoice = SalesInvoice::createDraft(1001, new DateTimeImmutable(), 'USD', 1.3);
+        $salesInvoice = $this->createDraftInvoice(currency:'USD', exchangeRate: 1.3);
 
         $this->addALine($salesInvoice, productId: 1, quantity: 2.0, tariff: 15.0, discount: 10.0,vatCode: 'S');
         $this->addALine($salesInvoice, productId: 2, quantity: 3.123456, tariff: 12.50, discount: null, vatCode: 'L');
@@ -241,7 +247,8 @@ final class SalesInvoiceTest extends TestCase
 
     private function createDraftInvoice(?string $currency = null, ?float $exchangeRate = null): SalesInvoice
     {
-        return SalesInvoice::createDraft(1001, new DateTimeImmutable(), $currency ?? 'EUR', $exchangeRate);
+        return SalesInvoice::createDraft($this->salesInvoiceRepository->nextIdentity(),
+            1001, new DateTimeImmutable(), $currency ?? 'EUR', $exchangeRate);
     }
 
     public function addALine(SalesInvoice $salesInvoice,

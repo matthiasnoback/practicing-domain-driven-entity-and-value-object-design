@@ -19,7 +19,19 @@ parameters:
 			path: src/Domain/Model/SalesInvoice/Line.php
 
 		-
+			message: '#^Property Domain\\Model\\SalesInvoice\\SalesInvoice\:\:\$id is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Domain/Model/SalesInvoice/SalesInvoice.php
+
+		-
 			message: '#^Property Domain\\Model\\SalesInvoice\\SalesInvoice\:\:\$invoiceDate is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
 			path: src/Domain/Model/SalesInvoice/SalesInvoice.php
+
+		-
+			message: '#^Property Domain\\Model\\SalesInvoice\\SalesInvoiceId\:\:\$uuid is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Domain/Model/SalesInvoice/SalesInvoiceId.php
