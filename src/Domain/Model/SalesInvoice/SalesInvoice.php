@@ -104,6 +104,11 @@ final class SalesInvoice
         ?float $discount,
         string $vatCode
     ): void {
+        foreach ($this->lines as $line) {
+            if ($line->hasProductId($productId)) {
+                throw new \InvalidArgumentException('Product already added');
+            }
+        }
         $this->lines[] = new Line($productId,
             $description,
             $quantity,

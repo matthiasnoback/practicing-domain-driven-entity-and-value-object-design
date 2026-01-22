@@ -113,4 +113,9 @@ final class Line
 
         return round($this->netAmount() * $vatRate / 100, 2);
     }
+
+    public function hasProductId(int $productId): bool
+    {
+        return $this->productId === $productId;
+    }
 }

@@ -21,6 +21,30 @@ final class SalesInvoiceTest extends TestCase
         $invoice = SalesInvoice::createDraft(1001, new DateTimeImmutable('2026-01-22'), 'USD', null);
     }
 
+    public function testLineProductShouldBeUnique(): void
+    {
+        $salesInvoice = SalesInvoice::createDraft(1001, new DateTimeImmutable(), 'USD', 1.3);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $sameProductId = 1;
+        $salesInvoice->addLine(
+            $sameProductId,
+            'Product with a 10% discount and standard VAT applied',
+            2.0,
+            15.0,
+            10.0,
+            'S'
+        );
+        $salesInvoice->addLine(
+            $sameProductId,
+            'Product with a 10% discount and standard VAT applied',
+            2.0,
+            15.0,
+            10.0,
+            'S'
+        );
+    }
+
     /**
      * @test
      */
