@@ -97,9 +97,22 @@ final class SalesInvoice
     }
 
     public function addLine(
-        Line $line
+        int $productId,
+        string $description,
+        float $quantity,
+        float $tariff,
+        ?float $discount,
+        string $vatCode
     ): void {
-        $this->lines[] = $line;
+        $this->lines[] = new Line($productId,
+            $description,
+            $quantity,
+            $this->quantityPrecision,
+            $tariff,
+            (string)$this->currency,
+            $discount,
+            $vatCode,
+            $this->exchangeRate?->rateAsFloat());
     }
 
     public function totalNetAmount(): Money
