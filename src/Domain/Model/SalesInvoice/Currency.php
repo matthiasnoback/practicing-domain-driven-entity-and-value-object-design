@@ -8,6 +8,9 @@ final class Currency
 {
     private string $currency;
 
+    /**
+     * @var array<string>
+     */
     private array $possibleValues = ['EUR', 'USD', 'GBP'];
 
     public function __construct(string $currency) {
