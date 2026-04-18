@@ -10,7 +10,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-beberlei-assert": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^10.5"
+        "phpunit/phpunit": "^12.5"
     },
     "require": {
         "php": "^8.4",
